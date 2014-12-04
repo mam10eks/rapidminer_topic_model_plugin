@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<operators name="template" version="5.0"
+	docbundle="com/rapidminer/resources/i18n/OperatorsDocTemplate">
+	<group key="">
+		<group key="own_stuff">
+			<operator>
+				<key>numerical_to_date</key>
+				<class>com.rapidminer.operator.preprocessing.transformation.Numerical2DateOperator
+				</class>
+				<replaces>Numerical2Date</replaces>
+			</operator>
+		</group>
+		<group key="topic_models">
+			<operator>
+				<key>exampleset_to_topicmodel</key>
+				<class>com.rapidminer.topicmodel.ExampleSetToTopicModel</class>
+			</operator>
+			<operator>
+				<key>documents_to_topicmodel</key>
+				<class>com.rapidminer.topicmodel.DocumentsTopicModel</class>
+			</operator>
+		</group>
+	</group>
+</operators>

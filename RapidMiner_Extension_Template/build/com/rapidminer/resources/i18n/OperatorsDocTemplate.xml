@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<operatorHelp lang="en_EN">
+	<group>
+		<key>own_stuff</key>
+		<name>neues Zeug</name>
+	</group>
+	<operator>
+		<key>numerical_to_date</key>
+		<name>Maiks Numerical2DateOperator</name>
+		<synopsis>The first test operator.</synopsis>
+		<help>This operator will do stupid stuff.</help>
+	</operator>
+
+	<group>
+		<key>topic_models</key>
+		<name>Topic Model</name>
+	</group>
+	<operator>
+		<key>exampleset_to_topicmodel</key>
+		<name>Process ExampleSet to TopicModels</name>
+		<synopsis>TODO write synopsis</synopsis>
+		<help>TODO write help</help>
+	</operator>
+	<operator>
+		<key>documents_to_topicmodel</key>
+		<name>Process Documents to TopicModels</name>
+		<synopsis>TODO write synopsis</synopsis>
+		<help>TODO write help</help>
+	</operator>
+
+</operatorHelp>
