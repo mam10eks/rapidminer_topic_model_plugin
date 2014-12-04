@@ -1,0 +1,3 @@
+Changes from RapidMiner 5.3.8 to 5.3.9
+--------------------------------------
+* BUGFIX: Fixed some operators only showing the Annotations renderer in the results view, e.g. the Generalized Sequential Patterns operator

@@ -75,6 +75,8 @@ public class DocumentsTopicModel extends Operator
 			numTopics = getParameterAsInt(NUMBER_TOPICS_KEY),
 			numIterations = getParameterAsInt(NUMBER_ITERATIONS_KEY);
 		
+		System.out.println("vorverarbeitung");
+		
 		List<String> allDocs = new ArrayList<String>();
 		
 		for(Document doc : inputPorts.getData(Document.class, true))
