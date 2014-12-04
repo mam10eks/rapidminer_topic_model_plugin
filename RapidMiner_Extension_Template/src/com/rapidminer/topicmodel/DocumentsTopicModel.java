@@ -80,7 +80,7 @@ public class DocumentsTopicModel extends Operator
 		List<String> allDocs = new ArrayList<String>();
 		
 		for(Document doc : inputPorts.getData(Document.class, true))
-		{	
+		{
 			allDocs.add(doc.getText());
 		}
 		
