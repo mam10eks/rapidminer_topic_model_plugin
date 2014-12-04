@@ -139,7 +139,7 @@ public class DocumentsTopicModel extends Operator
 
 		
 		
-		for(IOObject output : doPreprocessingForModel(model, instances))
+		for(IOObject output : doPostprocessingForModel(model, instances))
 		{
 			exampleSetOutput.deliver(output);
 		}
@@ -156,7 +156,7 @@ public class DocumentsTopicModel extends Operator
 	 * 
 	 * @return interesting facts about the found topics
 	 */
-	private List<IOObject> doPreprocessingForModel(ParallelTopicModel _model, InstanceList _instances)
+	private List<IOObject> doPostprocessingForModel(ParallelTopicModel _model, InstanceList _instances)
 	{
 		List<IOObject> ret = new ArrayList<IOObject>();
 		
