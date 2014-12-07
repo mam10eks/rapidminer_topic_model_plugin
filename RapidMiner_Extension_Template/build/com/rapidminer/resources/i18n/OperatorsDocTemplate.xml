@@ -27,5 +27,17 @@
 		<synopsis>TODO write synopsis</synopsis>
 		<help>TODO write help</help>
 	</operator>
+	<operator>
+	    <key>file_to_inferencer</key>
+	    <name>Process Inferencer From File</name>
+	    <synopsis>TODO write synopsis</synopsis>
+	    <help>TODO write help</help>
+	</operator>
+	<operator>
+	    <key>inferencer_to_file</key>
+	    <name>Save Inferencer to File</name>
+	    <synopsis>TODO write synopsis</synopsis>
+	    <help>TODO write help</help>
+	</operator>
 
 </operatorHelp>

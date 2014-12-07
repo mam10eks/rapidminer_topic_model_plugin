@@ -14,6 +14,8 @@ import com.rapidminer.operator.IOObject;
 import com.rapidminer.operator.Operator;
 import com.rapidminer.operator.OperatorDescription;
 import com.rapidminer.operator.OperatorException;
+import com.rapidminer.operator.UserError;
+import com.rapidminer.operator.ports.InputPort;
 import com.rapidminer.operator.ports.InputPortExtender;
 import com.rapidminer.operator.ports.OutputPort;
 import com.rapidminer.operator.ports.metadata.MetaData;
@@ -21,6 +23,8 @@ import com.rapidminer.operator.text.Document;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeDouble;
 import com.rapidminer.parameter.ParameterTypeInt;
+import com.rapidminer.parameter.UndefinedParameterError;
+import com.rapidminer.topicmodel.inferencer.MalletTopicInferencerIOObject;
 
 import cc.mallet.pipe.CharSequence2TokenSequence;
 import cc.mallet.pipe.CharSequenceLowercase;
@@ -29,9 +33,11 @@ import cc.mallet.pipe.SerialPipes;
 import cc.mallet.pipe.TokenSequence2FeatureSequence;
 import cc.mallet.pipe.iterator.StringArrayIterator;
 import cc.mallet.topics.ParallelTopicModel;
+import cc.mallet.topics.TopicInferencer;
 import cc.mallet.types.Alphabet;
 import cc.mallet.types.FeatureSequence;
 import cc.mallet.types.IDSorter;
+import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelSequence;
 
@@ -48,7 +54,9 @@ public class DocumentsTopicModel extends Operator
 	 */
 	private static final String
 		UNIQUE_INPUT_PORT_NAME = "document input",
-		UNIQUE_OUTPUT_PORT_NAME = "example set output";
+		UNIQUE_OUTPUT_PORT_NAME = "example set output",
+		UNIQUE_INFERENCER_OUTPUT_PORT_NAME = "inferencer output",
+		UNIQUE_INFERENCER_INPUT_PORT_NAME = "inferencer input";
 	
 	
 	public static final String
@@ -62,13 +70,19 @@ public class DocumentsTopicModel extends Operator
 	 * Arbitrarily (greater equals) one amount of input ports.
 	 */
 	private InputPortExtender
-		inputPorts = new InputPortExtender (UNIQUE_INPUT_PORT_NAME, getInputPorts(), new MetaData(Document.class), true);
+		documentInputPorts = new InputPortExtender (UNIQUE_INPUT_PORT_NAME, getInputPorts(), new MetaData(Document.class), true);
+	
+	private InputPort 
+		inferencerInput = getInputPorts().createPort(UNIQUE_INFERENCER_INPUT_PORT_NAME);
+		
+	
 	
 	/**
-	 * unique port.
+	 * unique outputports.
 	 */
 	private OutputPort
-		exampleSetOutput = getOutputPorts().createPort(UNIQUE_OUTPUT_PORT_NAME);
+		exampleSetOutput = getOutputPorts().createPort(UNIQUE_OUTPUT_PORT_NAME),
+		inferencerOutput = getOutputPorts().createPort(UNIQUE_INFERENCER_OUTPUT_PORT_NAME);
 
 	
 	/**
@@ -79,19 +93,30 @@ public class DocumentsTopicModel extends Operator
 	{
 		super(description);
 		
-		this.inputPorts.start();
+		this.documentInputPorts.start();
 		
+		this.inferencerInput.receiveMD(new MetaData(MalletTopicInferencerIOObject.class));
 		this.exampleSetOutput.deliverMD(new MetaData(ExampleSet.class));
+		this.inferencerOutput.deliverMD(new MetaData(MalletTopicInferencerIOObject.class));
 	}
 	
-	protected int
+	private int
 		numTopics,
 		numThreads,
 		numIterations;
 	
-	protected double
+	private double
 		alphaSum,
 		beta;
+	
+	private ParallelTopicModel 
+		model;
+	
+	private InstanceList 
+		instances;
+	
+	private TopicInferencer 
+		inferencer = null;
 	
 	/**
 	 * This method will be executed during the processing of the Operator.<br>
@@ -101,48 +126,56 @@ public class DocumentsTopicModel extends Operator
 	@Override
 	public void doWork() throws OperatorException
 	{
-		numThreads = getParameterAsInt(NUMBER_THREADS_KEY);
-		numTopics = getParameterAsInt(NUMBER_TOPICS_KEY);
-		numIterations = getParameterAsInt(NUMBER_ITERATIONS_KEY);
-		alphaSum = getParameterAsDouble(ALPHA_SUM);
-		beta = getParameterAsDouble(BETA);
-		
-		List<String> allDocs = new ArrayList<String>();
+		getAndsetParameters();
 		
 		
-		for(Document doc : inputPorts.getData(Document.class, true))
-		{
-			allDocs.add(doc.getText());
-		}
+		getAndSetInput();
 		
-		String[] documents = new String[allDocs.size()];
-		documents = allDocs.toArray(documents);
-		
-		InstanceList instances = createSampleInstanceList();
-
-		instances.addThruPipe(new StringArrayIterator(documents));
 		 
-		ParallelTopicModel model = new ParallelTopicModel(numTopics, alphaSum, beta);
-		model.addInstances(instances);
-		model.setNumThreads(numThreads);
-		model.setNumIterations(numIterations);
-		
-		try
+		if(inferencer == null)
 		{
-			model.estimate();
-		}
-		catch(IOException _ioException)
-		{
-			_ioException.printStackTrace();
-			throw new OperatorException("exception while estimating model!", _ioException);
-		}
+			model = new ParallelTopicModel(numTopics, alphaSum, beta);
+			model.addInstances(instances);
+			model.setNumThreads(numThreads);
+			model.setNumIterations(numIterations);
+			
+			try
+			{
+				model.estimate();
+			}
+			catch(IOException _ioException)
+			{
+				_ioException.printStackTrace();
+				throw new OperatorException("exception while estimating model!", _ioException);
+			}
 
-		
-		
-		for(IOObject output : doPostprocessingForModel(model, instances))
-		{
-			exampleSetOutput.deliver(output);
+			
+			//delivery of interesting data that where generated during doWork of this instance.
+			for(IOObject output : doPostprocessingForModel(model, instances))
+			{
+				if(output instanceof MalletTopicInferencerIOObject)
+				{
+					inferencerOutput.deliver(output);
+				}
+				else if(false)
+				{
+					exampleSetOutput.deliver(output);
+				}
+			}
 		}
+		else
+		{
+			for(Instance inst : instances)
+			{
+				double[] testProbabilities = inferencer.getSampledDistribution(inst, 10, 1, 5);
+
+		        System.out.println("0\t" + testProbabilities[0]);
+			}
+		}
+		
+		
+		
+
 	}
 	
 	
@@ -160,6 +193,12 @@ public class DocumentsTopicModel extends Operator
 	{
 		List<IOObject> ret = new ArrayList<IOObject>();
 		
+		
+		//get the inferencer
+		MalletTopicInferencerIOObject generatedInferencer = new MalletTopicInferencerIOObject(_model.getInferencer());
+		ret.add(generatedInferencer);
+		
+		//do some other stuff
 		Alphabet dataAlphabet = _instances.getDataAlphabet();
 		
 		Formatter out = new Formatter(new StringBuilder(), Locale.GERMAN);
@@ -235,5 +274,48 @@ public class DocumentsTopicModel extends Operator
 			return new InstanceList (new SerialPipes(pipeList));
 	 }
 	 
+	 
+	 private void getAndsetParameters() throws UndefinedParameterError
+	 {
+			numThreads = getParameterAsInt(NUMBER_THREADS_KEY);
+			numTopics = getParameterAsInt(NUMBER_TOPICS_KEY);
+			numIterations = getParameterAsInt(NUMBER_ITERATIONS_KEY);
+			alphaSum = getParameterAsDouble(ALPHA_SUM);
+			beta = getParameterAsDouble(BETA);
+	 }
+	 
+	 private void getAndSetInput() throws UserError
+	 {
+			List<String> allDocs = new ArrayList<String>();
+			inferencer = null;
+			
+			for(Document doc : documentInputPorts.getData(Document.class, true))
+			{
+				allDocs.add(doc.getText());
+			}
+			
+			try
+			{
+				MalletTopicInferencerIOObject malletTopicInferencerIOObject = inferencerInput.getDataOrNull(MalletTopicInferencerIOObject.class);
+				if(malletTopicInferencerIOObject != null)
+				{
+					inferencer = malletTopicInferencerIOObject.getTopicInferencer();
+				}
+			}
+			catch(UserError _userError)
+			{
+				_userError.printStackTrace();
+			}
+			
+			
+			
+			String[] documents = new String[allDocs.size()];
+			documents = allDocs.toArray(documents);
+			
+			instances = createSampleInstanceList();
+
+			instances.addThruPipe(new StringArrayIterator(documents));
+
+	 }
 	 
 }

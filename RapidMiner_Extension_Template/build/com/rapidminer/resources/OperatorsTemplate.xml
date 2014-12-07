@@ -19,6 +19,14 @@
 				<key>documents_to_topicmodel</key>
 				<class>com.rapidminer.topicmodel.DocumentsTopicModel</class>
 			</operator>
+			<operator>
+			    <key>file_to_inferencer</key>
+			    <class>com.rapidminer.topicmodel.io.ProcessTopicInferencerFromFile</class>
+			</operator>
+			<operator>
+			    <key>inferencer_to_file</key>
+			    <class>com.rapidminer.topicmodel.io.SaveTopicInferencerToFile</class>
+			</operator>
 		</group>
 	</group>
 </operators>
