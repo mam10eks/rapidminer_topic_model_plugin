@@ -10,7 +10,6 @@ import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
 import com.rapidminer.example.table.ExampleTable;
 import com.rapidminer.example.table.MemoryExampleTable;
-import com.rapidminer.operator.preprocessing.filter.Numerical2Date;
 import com.rapidminer.operator.preprocessing.transformation.Numerical2DateOperator;
 import com.rapidminer.tools.Ontology;
 import com.rapidminer.example.table.DataRow;
@@ -37,16 +36,29 @@ public class helper
 	
 	public static ExampleTable createExampleTable(List<Attribute> _attributes, List<List<Number>> _inputRows)
 	{
-		MemoryExampleTable table = new MemoryExampleTable(_attributes);
-		MyDataRowFactory factory = MyDataRowFactory.getNewInstance(_attributes);
+		List<List<Object>> objectInputRows = new ArrayList<List<Object>>();
 		
-		for(List<Number> row : _inputRows)
+		for(List<Number> numberRow : _inputRows)
+		{
+			objectInputRows.add(new ArrayList<Object>(numberRow));
+		}
+		
+		return createObjectExampleTable(_attributes, objectInputRows);
+	}
+	
+	
+	public static ExampleTable createObjectExampleTable(List<Attribute> _attributes, List<List<Object>> _inputRows)
+	{
+		MemoryExampleTable table = new MemoryExampleTable(_attributes);
+		ObjectDataRowFactory factory = ObjectDataRowFactory.getNewInstance(_attributes);
+			
+		for(List<Object> row : _inputRows)
 		{
 			DataRow dataRow = factory.createRow(row);
 			table.addDataRow(dataRow);
 		}
-		
-		return table; 
+	
+		return table;
 	}
 	
 	
@@ -55,64 +67,143 @@ public class helper
 	{
 		List<Attribute> ret = new ArrayList<Attribute>();
 
-		ret.add(AttributeFactory.createAttribute("hallo", Ontology.NUMERICAL));
-		ret.add(AttributeFactory.createAttribute("mein",Ontology.NUMERICAL));
-		ret.add(AttributeFactory.createAttribute("name",Ontology.NUMERICAL));
+		ret.add(AttributeFactory.createAttribute("dies", Ontology.NUMERICAL));		//[0]
 		ret.add(AttributeFactory.createAttribute("ist",Ontology.NUMERICAL));
-		ret.add(AttributeFactory.createAttribute("maik",Ontology.NUMERICAL));
-		ret.add(AttributeFactory.createAttribute("gib",Ontology.NUMERICAL));
-		ret.add(AttributeFactory.createAttribute("mir",Ontology.NUMERICAL));
-		ret.add(AttributeFactory.createAttribute("all",Ontology.NUMERICAL));
-		ret.add(AttributeFactory.createAttribute("dein",Ontology.NUMERICAL));
-		ret.add(AttributeFactory.createAttribute("geld",Ontology.NUMERICAL));
+		ret.add(AttributeFactory.createAttribute("ein",Ontology.NUMERICAL));
+		ret.add(AttributeFactory.createAttribute("hello",Ontology.NUMERICAL));
+		ret.add(AttributeFactory.createAttribute("world",Ontology.NUMERICAL));
+		ret.add(AttributeFactory.createAttribute("exampleset",Ontology.NUMERICAL));	//[5]
+		ret.add(AttributeFactory.createAttribute("zum",Ontology.NUMERICAL));
+		ret.add(AttributeFactory.createAttribute("testen",Ontology.NUMERICAL));
+		ret.add(AttributeFactory.createAttribute("reicht",Ontology.NUMERICAL));
+		ret.add(AttributeFactory.createAttribute("es",Ontology.NUMERICAL));
+		ret.add(AttributeFactory.createAttribute("aus",Ontology.NUMERICAL));		//[10]
+		ret.add(AttributeFactory.createAttribute("oder",Ontology.NUMERICAL));
+		ret.add(AttributeFactory.createAttribute("doch",Ontology.NUMERICAL));
+		ret.add(AttributeFactory.createAttribute("nicht",Ontology.NUMERICAL));		//[13]
 		
 		return ret;
 	}
 	
+	
+	/**
+	 * 
+	 * @return 
+	 */
 	public static List<List<Number>> createExampleTebleRows()
 	{
 		List<List<Number>> ret = new ArrayList<List<Number>>();
 		
+		/*
+		 * example one represents the following document:<br>
+		 * "Dies ist ein hello world ExampleSet."
+		 */
 		List<Number> row = new ArrayList<Number>();
-		row.add(0.5);
-		row.add(0.5);
-		row.add(0.5);
-		row.add(0.5);
-		row.add(0.5);
+		row.add(1);		//[0]
+		row.add(1);
+		row.add(1);
+		row.add(1);
+		row.add(1);
+		row.add(1);		//[5]
 		row.add(0);
 		row.add(0);
 		row.add(0);
 		row.add(0);
+		row.add(0);		//[10]
 		row.add(0);
+		row.add(0);
+		row.add(0);		//[13]
+		
+		ret.add(row);
+		
+		/*
+		 * example two represents the following document:<br>
+		 * "Zum testen reicht es aus."
+		 */
+		row = new ArrayList<Number>();
+		row.add(0);		//[0]
+		row.add(0);
+		row.add(0);
+		row.add(0);
+		row.add(0);
+		row.add(0);		//[5]
+		row.add(1);
+		row.add(1);
+		row.add(1);
+		row.add(1);
+		row.add(1);		//[10]
+		row.add(0);
+		row.add(0);
+		row.add(0);		//[13]
 		
 		ret.add(row);
 		
 		
+		/*
+		 * example two represents the following document:<br>
+		 * "Oder doch nicht?"
+		 */
 		row = new ArrayList<Number>();
+		row.add(0);		//[0]
 		row.add(0);
 		row.add(0);
 		row.add(0);
 		row.add(0);
+		row.add(0);		//[5]
 		row.add(0);
-		row.add(0.7);
-		row.add(0.7);
-		row.add(0.7);
-		row.add(0.7);
-		row.add(0.7);
+		row.add(0);
+		row.add(0);
+		row.add(0);
+		row.add(0);		//[10]
+		row.add(1);
+		row.add(1);
+		row.add(1);		//[13]
 		
 		ret.add(row);
 		
+		
+		/*
+		 * example two represents the following document:<br>
+		 * "Oder oder oder doch nicht nicht nicht?"
+		 */
 		row = new ArrayList<Number>();
-		row.add(0.5);
-		row.add(0.5);
-		row.add(0.5);
-		row.add(0.5);
-		row.add(0.5);
+		row.add(0);		//[0]
 		row.add(0);
 		row.add(0);
 		row.add(0);
 		row.add(0);
+		row.add(0);		//[5]
 		row.add(0);
+		row.add(0);
+		row.add(0);
+		row.add(0);
+		row.add(0);		//[10]
+		row.add(3);
+		row.add(1);
+		row.add(3);		//[13]
+		
+		ret.add(row);
+		
+		
+		/*
+		 * example two represents the following document:<br>
+		 * "Oder doch nicht?"
+		 */
+		row = new ArrayList<Number>();
+		row.add(0);		//[0]
+		row.add(3);
+		row.add(0);
+		row.add(0);
+		row.add(0);
+		row.add(1);		//[5]
+		row.add(0);
+		row.add(0);
+		row.add(2);
+		row.add(0);
+		row.add(2);		//[10]
+		row.add(0);
+		row.add(0);
+		row.add(0);		//[13]
 		
 		ret.add(row);
 		
@@ -121,26 +212,26 @@ public class helper
 }
 
 
-abstract class MyDataRowFactory
+abstract class ObjectDataRowFactory
 {
-	public abstract DataRow createRow(List<Number> _inputRow);
+	public abstract DataRow createRow(List<Object> _inputRow);
 	
-	public static MyDataRowFactory getNewInstance(List<Attribute> _attributes)
+	public static ObjectDataRowFactory getNewInstance(List<Attribute> _attributes)
 	{
 		DataRowFactory factory = new DataRowFactory(DataRowFactory.TYPE_DOUBLE_ARRAY, '.');
 		
-		return new MyDataRowFactoryImpl(_attributes, factory);
+		return new ObjectDataRowFactoryImpl(_attributes, factory);
 	}
 	
 		
-	private MyDataRowFactory(){}
+	private ObjectDataRowFactory(){}
 
-	private static final class MyDataRowFactoryImpl extends MyDataRowFactory
+	private static final class ObjectDataRowFactoryImpl extends ObjectDataRowFactory
 	{
 		 private final DataRowFactory factory;
 	     private final Attribute[] attributes;
 	     
-	     private MyDataRowFactoryImpl(List<Attribute> _attributes, DataRowFactory _factory)
+	     private ObjectDataRowFactoryImpl(List<Attribute> _attributes, DataRowFactory _factory)
 	     {
 	    	 assert _factory != null;
 	         assert _attributes != null;
@@ -149,9 +240,9 @@ abstract class MyDataRowFactory
 	     }
 
 		@Override
-		public DataRow createRow(List<Number> _inputRow) 
+		public DataRow createRow(List<Object> _inputRow) 
 		{
-			Number[] numbers = _inputRow.toArray(new Number[_inputRow.size()]);
+			Object[] numbers = _inputRow.toArray(new Object[_inputRow.size()]);
 		    return factory.create(numbers, attributes);
 		}
 	}

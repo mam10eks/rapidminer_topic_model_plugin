@@ -1,5 +1,8 @@
 package com.rapidminer.topicmodel;
 
+import static com.rapidminer.test_stuff.Blaa.termFrequenceExampleToFeatures;
+import static com.rapidminer.test_stuff.Blaa.getAlphabetFromExampleSet;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Formatter;
@@ -71,6 +74,7 @@ public class DocumentsTopicModel extends Operator
 		NUMBER_THREADS_KEY = "number_of_threads",
 		NUMBER_ITERATIONS_KEY = "number_of_iterations",
 		NUMBER_TOPICS_KEY = "number_of_topics",
+		NUMBER_WORDS_PER_TOPIC = "number_of_words_per_topic",
 		ALPHA_SUM = "alpha_sum",
 		BETA = "beta";
 	
@@ -119,7 +123,8 @@ public class DocumentsTopicModel extends Operator
 	private int
 		numTopics,
 		numThreads,
-		numIterations;
+		numIterations,
+		numberWordsPerTopic;
 	
 	private double
 		alphaSum,
@@ -170,7 +175,14 @@ public class DocumentsTopicModel extends Operator
 			TopicTrainerPostProcessor postProcessor = new TopicTrainerPostProcessor(model, instances);
 		
 			inferencerOutput.deliver(postProcessor.getTrainedInferencer());
-			topicOverviewOutput.deliver(postProcessor.getAllTopics(10));					
+			try
+			{
+				topicOverviewOutput.deliver(postProcessor.getAllTopics(numberWordsPerTopic));
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
 			topicAllocationOutput.deliver(postProcessor.getTopicDistributionForAllInstances());
 			topicAllocationForEachWordOutput.deliver(postProcessor.getTokenTopicAssignmentForAllInstances());
 		}
@@ -247,7 +259,7 @@ public class DocumentsTopicModel extends Operator
 		 ret.add(new ParameterTypeInt(NUMBER_ITERATIONS_KEY , "The number of iterations of Gibbs sampling.", 1, Integer.MAX_VALUE,1000, false));
 		 ret.add(new ParameterTypeDouble(ALPHA_SUM, "Alpha parameter: smoothing over topic distribution.", 0.0, Double.MAX_VALUE, 50.0, true));
 		 ret.add(new ParameterTypeDouble(BETA, "Beta parameter: smoothing over unigram distribution.", 0.0, Double.MAX_VALUE, 0.1, true));
-		 
+		 ret.add(new ParameterTypeInt(NUMBER_WORDS_PER_TOPIC, "The number of words to show for eacht topic(descending).", 2,Integer.MAX_VALUE,5, false));
 		 
 		 return ret;
 	 }
@@ -257,12 +269,9 @@ public class DocumentsTopicModel extends Operator
 	 {
 			ArrayList<Pipe> pipeList = new ArrayList<Pipe>();
 
-		    // Pipes: lowercase, map to features
 		    pipeList.add( new CharSequenceLowercase() );
 		    pipeList.add( new CharSequence2TokenSequence(Pattern.compile("\\p{L}[\\p{L}\\p{P}]+\\p{L}")) );
 		    pipeList.add( new TokenSequence2FeatureSequence() );
-//		    pipeList.add(new Target2Label());
-//		    pipeList.add(new PrintInputAndTarget());
 			
 			return new InstanceList (new SerialPipes(pipeList));
 	 }
@@ -275,6 +284,7 @@ public class DocumentsTopicModel extends Operator
 			numIterations = getParameterAsInt(NUMBER_ITERATIONS_KEY);
 			alphaSum = getParameterAsDouble(ALPHA_SUM);
 			beta = getParameterAsDouble(BETA);
+			numberWordsPerTopic = getParameterAsInt(NUMBER_WORDS_PER_TOPIC);
 	 }
 	 
 	 private void getAndSetInput() throws UserError
@@ -323,14 +333,23 @@ public class DocumentsTopicModel extends Operator
 			{
 				for(ExampleSet exampleSet : allExampleSets)
 				{
-					for(FeatureSequence sequence : exampleSetToFeaturesequence(exampleSet))
+					Alphabet alph = getAlphabetFromExampleSet(exampleSet);
+					instances = new InstanceList(alph, null);
+					for(Example example : exampleSet)
 					{
-						System.out.println("for schleife");
-						Instance inst = new Instance(sequence, "target", "name", "source");
+						int[] features = termFrequenceExampleToFeatures(example, instances.getAlphabet());
+						FeatureSequence data = new FeatureSequence(instances.getAlphabet(), features);
 						
-						System.out.println("TODO add instance");
-//						instances.addThruPipe(inst);
+						System.out.println(data.toString());
+						instances.add(new Instance(data, "target", "name", "source"));
 					}
+					
+					if(allExampleSets.size() > 1)
+					{
+						System.out.println("TODO implement several ExampleSets");
+					}
+					
+					break;
 				}
 			}
 	 }
@@ -397,7 +416,38 @@ class TopicTrainerPostProcessor
 	 */
 	public ExampleSet getAllTopics(int _topWords)
 	{
-		return null;
+		List<Attribute> attributes = new ArrayList<Attribute>();
+		List<List<Object>> rows = new ArrayList<List<Object>>();
+		Object[][] topWords = model.getTopWords(_topWords);
+		
+		Object[][] temp = new Object[topWords[0].length][];
+		for(int f = 0; f < topWords.length; f++)
+		{
+			for(int i = 0; i < topWords[f].length; i++)
+			{
+				temp[i][f] = topWords[f][i];
+			}
+		}
+			
+		topWords = temp;
+				
+		for(int f = 0; f < topWords.length; f++)
+		{
+			attributes.add(AttributeFactory.createAttribute("Topic "+ f, Ontology.NOMINAL));
+
+			System.out.println("Topic "+ f);
+			List<Object> row = new ArrayList<Object>();
+			for(int i = 0; i < topWords[f].length; i++)
+			{
+				row.add(topWords[f][i].toString());
+			}
+			rows.add(row);
+		}
+		
+		ExampleTable table = helper.createObjectExampleTable(attributes, rows);
+		ExampleSet es = table.createExampleSet();	
+		
+		return es;
 	}
 	
 	

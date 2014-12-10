@@ -2,7 +2,10 @@ package com.rapidminer.operator.preprocessing.transformation;
 
 import static com.rapidminer.topicmodel.TabbedWriterHelper.write;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Example;
@@ -88,7 +91,7 @@ public class Numerical2DateOperator extends Operator
 		exampleSetOutput.deliver(exampleSet);
 	}
 	
-	public static void doSomeExampleSetStuff(ExampleSet _exampleSet)
+	public static void doSomeExampleSetStuff(ExampleSet _exampleSet, Writer _writer)
 	{
 		int 
 			rowCount = _exampleSet.size() +1,
@@ -123,11 +126,29 @@ public class Numerical2DateOperator extends Operator
 	
 		try 
 		{
-			write(rows);
+			write(rows, _writer);
 		} 
 		catch (IOException e) 
 		{
 			e.printStackTrace();
 		}	
+	}
+
+	
+
+	public static void doSomeExampleSetStuff(ExampleSet _exampleSet)
+	{
+		
+		try 
+		{
+			File file = new File("/home/maik/Schreibtisch/wordVector");
+			FileWriter fileWriter = new FileWriter(file);
+			doSomeExampleSetStuff(_exampleSet, fileWriter);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 	}
 }
