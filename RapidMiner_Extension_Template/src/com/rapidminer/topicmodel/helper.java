@@ -29,8 +29,6 @@ public class helper
 		ExampleTable table = createExampleTable(attributes, createExampleTebleRows());
 		ExampleSet es = table.createExampleSet();
 		
-		System.out.println(es);
-		
 		Numerical2DateOperator.doSomeExampleSetStuff(es);
 	}
 	

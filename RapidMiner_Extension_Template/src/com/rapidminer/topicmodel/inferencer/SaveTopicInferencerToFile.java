@@ -1,4 +1,4 @@
-package com.rapidminer.topicmodel.io;
+package com.rapidminer.topicmodel.inferencer;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,7 +13,6 @@ import com.rapidminer.operator.ports.InputPort;
 import com.rapidminer.operator.ports.metadata.MetaData;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeFile;
-import com.rapidminer.topicmodel.inferencer.MalletTopicInferencerIOObject;
 
 public class SaveTopicInferencerToFile extends Operator
 {

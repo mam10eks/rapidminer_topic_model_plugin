@@ -63,7 +63,7 @@ public class DocumentsTopicModel extends Operator
 	private static final String
 		UNIQUE_DOCUMENT_INPUT_PORT_NAME = "document input",
 		UNIQUE_TOPIC_OVERVIEW_OUTPUT_PORT_NAME = "example set topic overview",
-		UNIQUE_TOPIC_ALLOCATION_OUTPUT_PORT_NAME = "example set topic allocation",
+		UNIQUE_TOPIC_ALLOCATION_OUTPUT_PORT_NAME = "example set topic distribution per document",
 		UNIQUE_TOPIC_INSTANCE_ASSIGNMENT_PORT_NAME = "example set topic allocation for each word",
 		UNIQUE_INFERENCER_OUTPUT_PORT_NAME = "inferencer output",
 		UNIQUE_INFERENCER_INPUT_PORT_NAME = "inferencer input",
@@ -352,40 +352,6 @@ public class DocumentsTopicModel extends Operator
 					break;
 				}
 			}
-	 }
-	 
-	 
-	 
-	 private List<FeatureSequence> exampleSetToFeaturesequence(ExampleSet _exampleSet)
-	 {
-		 List<FeatureSequence> ret = new ArrayList<FeatureSequence>();
-		 String[] alphabetMembers = new String[_exampleSet.getAttributes().size()];
-		 int j = 0;
-		 
-		 for(Attribute attribute : _exampleSet.getAttributes())
-		 {
-			 alphabetMembers[j++] = attribute.getName();
-		 }
-		 
-		 
-		 Alphabet alphabet = new Alphabet(alphabetMembers);
-		 
-		 for(int i=0; i<_exampleSet.size();i++)
-		 {
-			 Example example = _exampleSet.getExample(i);
-			 int[] values = new int[_exampleSet.getAttributes().size()];
-			 
-			 j=0;
-			 for(Attribute attribute : _exampleSet.getAttributes())
-			 {
-				values[j++] = (int) example.getNumericalValue(attribute);
-			 }
-			 ret.add(new FeatureSequence(alphabet, values));
-			 
-		 }
-		 
-		 
-		 return  ret;
 	 }
 }
 

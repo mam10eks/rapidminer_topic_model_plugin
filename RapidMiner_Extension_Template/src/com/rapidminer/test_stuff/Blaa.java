@@ -90,7 +90,13 @@ public class Blaa
 		for(int i=0; i< alphabetSize; i++)
 		{
 			Object alphabetKey = _alphabet.lookupObject(i);
-			int alphabetKeyFrequency = ((Number) _example.get(alphabetKey)).intValue();
+			
+			int alphabetKeyFrequency = 0;
+			if(_example.get(alphabetKey) instanceof Number)
+			{
+				alphabetKeyFrequency = ((Number) _example.get(alphabetKey)).intValue();
+			}
+
 			for(int j=0; j<alphabetKeyFrequency; j++)
 			{
 				features.add(i);
@@ -106,18 +112,46 @@ public class Blaa
 		return ret;
 	}
 	
+	public static Alphabet getAlphabetFromExampleSet(List<ExampleSet> _exampleSetList)
+	{
+		
+		
+		List<String> globalAlphabet = new ArrayList<String>();
+		
+		for(ExampleSet exampleSet : _exampleSetList)
+		{
+			for(Attribute attr : exampleSet.getAttributes())
+			{
+				String alphabetObject = attr.getName();
+				
+				if(! globalAlphabet.contains(alphabetObject) && attr.isNumerical())
+				{
+					globalAlphabet.add(alphabetObject);
+				}
+			}
+		}
+		
+		Alphabet ret = new Alphabet(globalAlphabet.toArray(new String[globalAlphabet.size()]));
+		
+		return ret;
+	}
+	
 	
 	public static Alphabet getAlphabetFromExampleSet(ExampleSet _exampleSet)
 	{
-		String[] alphabetObjects = new String[_exampleSet.getAttributes().size()];
+//		String[] alphabetObjects = new String[_exampleSet.getAttributes().size()];
+//		
+//		int i=0;
+//		for(Attribute attr : _exampleSet.getAttributes())
+//		{
+//			alphabetObjects[i++] = attr.getName();
+//		}
+//
+//		return new Alphabet(alphabetObjects);
 		
-		int i=0;
-		for(Attribute attr : _exampleSet.getAttributes())
-		{
-			alphabetObjects[i++] = attr.getName();
-		}
-
-		return new Alphabet(alphabetObjects);
+		List<ExampleSet> exampleSetList = new ArrayList<ExampleSet>();
+		exampleSetList.add(_exampleSet);
+		return getAlphabetFromExampleSet(exampleSetList);
 	}
 	
 	/**
