@@ -28,10 +28,16 @@ import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelSequence;
 
 import com.rapidminer.example.Attribute;
+import com.rapidminer.example.AttributeTransformation;
+import com.rapidminer.example.Attributes;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
+import com.rapidminer.example.Statistics;
 import com.rapidminer.example.table.AttributeFactory;
+import com.rapidminer.example.table.DataRow;
 import com.rapidminer.example.table.ExampleTable;
+import com.rapidminer.example.table.NominalMapping;
+import com.rapidminer.operator.Annotations;
 import com.rapidminer.operator.IOObject;
 import com.rapidminer.operator.Operator;
 import com.rapidminer.operator.OperatorDescription;
@@ -374,7 +380,6 @@ class TopicTrainerPostProcessor
 	
 	
 	/**
-	 * TODO implement.<br>
 	 * this method should return an ExampleSet as overview of all trained topics.<br>
 	 * For each Topic there will be shown the _topWords most frequently words of the topic.
 	 * 
@@ -385,29 +390,26 @@ class TopicTrainerPostProcessor
 		List<Attribute> attributes = new ArrayList<Attribute>();
 		List<List<Object>> rows = new ArrayList<List<Object>>();
 		Object[][] topWords = model.getTopWords(_topWords);
+		List<Object>[] row = new ArrayList[_topWords];
 		
-		Object[][] temp = new Object[topWords[0].length][];
-		for(int f = 0; f < topWords.length; f++)
+		for(int i = 0; i < _topWords; i++)
 		{
-			for(int i = 0; i < topWords[f].length; i++)
-			{
-				temp[i][f] = topWords[f][i];
-			}
+			row[i] = new ArrayList<Object>();
 		}
+		
+		for(int i = 0; i < topWords.length; i++)
+		{			
+			attributes.add(AttributeFactory.createAttribute("Topic " + i, Ontology.NOMINAL));
 			
-		topWords = temp;
-				
-		for(int f = 0; f < topWords.length; f++)
-		{
-			attributes.add(AttributeFactory.createAttribute("Topic "+ f, Ontology.NOMINAL));
-
-			System.out.println("Topic "+ f);
-			List<Object> row = new ArrayList<Object>();
-			for(int i = 0; i < topWords[f].length; i++)
+			for(int f = 0; f < topWords[i].length; f++)
 			{
-				row.add(topWords[f][i].toString());
+				row[f].add(topWords[i][f]);
 			}
-			rows.add(row);
+		}	
+		
+		for(int i = 0; i < _topWords; i++)
+		{
+			rows.add(row[i]);
 		}
 		
 		ExampleTable table = helper.createObjectExampleTable(attributes, rows);
@@ -416,54 +418,39 @@ class TopicTrainerPostProcessor
 		return es;
 	}
 	
-	
-	//TODO convert console output to an exampleset
+	/**
+	 * this method should return an ExampleSet with the probability that a topic is part of a document.<br>
+	 * For each Topic there will be shown the probability that Topic is in document.
+	 * 
+	 * @return 
+	 */
 	public ExampleSet getTopicDistributionForAllInstances()
 	{
-		//do some other stuff
-		Alphabet dataAlphabet = instances.getDataAlphabet();
+		List<Attribute> attributes = new ArrayList<Attribute>();
+		List<List<Number>> rows = new ArrayList<List<Number>>();
 		
-		Formatter out = new Formatter(new StringBuilder(), Locale.GERMAN);
-
-		for(int i=0;i< model.getData().size();i++)
+		for(int topic = 0; topic < model.getNumTopics(); topic++)
 		{
-			out = new Formatter(new StringBuilder(), Locale.GERMAN);
-			out.format("\n################  DOCUMENT %d  ################\n", i);
-//			out.format("\nTopic assignment:\n\n");
-//			FeatureSequence tokens = (FeatureSequence) model.getData().get(i).instance.getData();
-//			LabelSequence topics = model.getData().get(i).topicSequence;
-//			
-//		    for(int position = 0; position < tokens.getLength(); position++) 
-//		    {
-//		    	out.format("%s-%d ", dataAlphabet.lookupObject(tokens.getIndexAtPosition(position)), topics.getIndexAtPosition(position));
-//		    }
-			
-			// Estimate the topic distribution of the first instance, given the current Gibbs state.
-			double[] topicDistribution = model.getTopicProbabilities(i);
-	    
-			// Get an array of sorted sets of word ID/count pairs
-			ArrayList<TreeSet<IDSorter>> topicSortedWords = model.getSortedWords();
-			// Show top 5 words in topics with proportions for the first document
-			out.format("\n\nTopic distribution\n\n");
-			
-			for (int topic = 0; topic < model.getNumTopics(); topic++) 
-			{
-				Iterator<IDSorter> iterator = topicSortedWords.get(topic).iterator();
-	        
-				
-				out.format("\n%d\t%.3f\t", topic, topicDistribution[topic]);
-				int rank = 0;
-				while (iterator.hasNext() && rank < 5) 
-				{
-					IDSorter idCountPair = iterator.next();
-					out.format("%s (%.0f) ", dataAlphabet.lookupObject(idCountPair.getID()), idCountPair.getWeight());
-					rank++;
-				}
-			}
-			System.out.println(out);
+			attributes.add(AttributeFactory.createAttribute("Topic " + topic, Ontology.NUMERICAL));
 		}
 		
-		return null;
+		for(int doc = 0; doc < model.getData().size(); doc++)
+		{
+			List<Number> row = new ArrayList<Number>();
+			
+			double[] topicDistribution = model.getTopicProbabilities(doc);
+						
+			for(int topic = 0; topic < model.numTopics; topic++) row.add(topicDistribution[topic]);
+		
+			rows.add(row);
+		}
+		
+		System.out.println(rows);
+		
+		ExampleTable table = helper.createExampleTable(attributes, rows);
+		ExampleSet es = table.createExampleSet();	
+		
+		return es;
 	}
 	
 	
