@@ -1,8 +1,5 @@
 package com.rapidminer.topicmodel.inferencer;
 
-import static com.rapidminer.test_stuff.Blaa.getAlphabetFromExampleSet;
-import static com.rapidminer.test_stuff.Blaa.termFrequenceExampleToFeatures;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,13 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cc.mallet.topics.TopicInferencer;
-import cc.mallet.types.Alphabet;
-import cc.mallet.types.FeatureSequence;
 import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 
 import com.rapidminer.example.Attribute;
-import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
 import com.rapidminer.example.table.ExampleTable;
@@ -42,8 +36,6 @@ public class ProcessTopicInferencerFromFile extends Operator
 		NUMBER_ITERATIONS = "iterations",
 		NUMBER_THINNING = "thinning",
 		NUMBER_BURNIN = "burnin";
-	
-		//	int numIterations, int thinning, int burnIn
 	
 	private final OutputPort
 		exampleSetOutput = getOutputPorts().createPort(UNIQUE_TOPIC_ALLOCATION_OUTPUT_PORT_NAME);
@@ -75,41 +67,40 @@ public class ProcessTopicInferencerFromFile extends Operator
 			TopicInferencer inferencer = getTopicInferencer(getParameterAsFile(INFERENCER_FILE_TOTAL_PATH));
 			
 			List<ExampleSet> exampleSetList = exampleSetInputPorts.getData(ExampleSet.class, true);
-			Alphabet globalAlphabet = getAlphabetFromExampleSet(exampleSetList);
+
 			
-			InstanceList instances = new InstanceList(globalAlphabet, null);
+			InstanceList instances = helper.getInstanceList(exampleSetList);
 			
-			for(ExampleSet exampleSet : exampleSetList)
-			{
-				for(Example example : exampleSet)
-				{
-					int[] features = termFrequenceExampleToFeatures(example, instances.getAlphabet());
-					FeatureSequence data = new FeatureSequence(instances.getAlphabet(), features);
-					
-//					System.out.println(data.toString());
-					instances.add(new Instance(data, "target", "name", "source"));
-				}
-			}
+			List<Attribute> attributes = new ArrayList<Attribute>();
+			attributes.add(AttributeFactory.createAttribute("label", Ontology.NOMINAL));
+			attributes.add(AttributeFactory.createAttribute("metadata_file", Ontology.NOMINAL));
+			attributes.add(AttributeFactory.createAttribute("metadata_path", Ontology.NOMINAL));
+
+			boolean isAttributeListComplete = false;
 			
-			
-			
-			List<Attribute> attributes = null;
-			List<List<Number>> rows = new ArrayList<List<Number>>();
+			List<List<Object>> rows = new ArrayList<List<Object>>();
 			for(Instance inst : instances)
 			{
 				
 				double[] testProbabilities = inferencer.getSampledDistribution(inst, iterations, thinning, burnIn);
 				
-				List<Number> row = new ArrayList<Number>();
+				List<Object> row = new ArrayList<Object>();
+				
+				row.add(inst.getName());
+				row.add(inst.getTarget());
+				row.add(inst.getSource());
+
+				
 				for(int i=0;i<testProbabilities.length; i++)
 				{
 					row.add(testProbabilities[i]);
 				}
 				rows.add(row);
 		        
-		        if(attributes == null)
+		        if(!isAttributeListComplete)
 		        {
-		        	attributes = new ArrayList<Attribute>();
+		        	isAttributeListComplete = true;
+		        	
 		        	for(int i=0;i<testProbabilities.length; i++)
 		        	{
 		        		attributes.add(AttributeFactory.createAttribute("Topic "+ i, Ontology.NUMERICAL));
@@ -117,7 +108,7 @@ public class ProcessTopicInferencerFromFile extends Operator
 		        }
 			}
 			
-			ExampleTable table = helper.createExampleTable(attributes, rows);
+			ExampleTable table = helper.createObjectExampleTable(attributes, rows);
 			ExampleSet es = table.createExampleSet();
 			
 			exampleSetOutput.deliver(es);
@@ -144,7 +135,7 @@ public class ProcessTopicInferencerFromFile extends Operator
 	}
 	
 	
-	private TopicInferencer getTopicInferencer(File _file) throws ClassNotFoundException, IOException
+	public static TopicInferencer getTopicInferencer(File _file) throws ClassNotFoundException, IOException
 	{
 		FileInputStream fis = null;
 		ObjectInputStream ois = null;
@@ -162,29 +153,15 @@ public class ProcessTopicInferencerFromFile extends Operator
 		}
 		catch(ClassNotFoundException _classNotFoundException)
 		{
-			if(ois != null)
-			{
-				ois.close();
-			}
-			
-			if(fis != null)
-			{
-				fis.close();
-			}
+			helper.close(ois);
+			helper.close(fis);
 			
 			throw _classNotFoundException;
 		}
 		catch(IOException _ioException)
 		{
-			if(ois != null)
-			{
-				ois.close();
-			}
-			
-			if(fis != null)
-			{
-				fis.close();
-			}
+			helper.close(ois);
+			helper.close(fis);
 			
 			throw _ioException;			
 		}

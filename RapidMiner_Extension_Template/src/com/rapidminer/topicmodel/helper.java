@@ -1,11 +1,24 @@
 package com.rapidminer.topicmodel;
 
+import static com.rapidminer.test_stuff.Blaa.getAlphabetFromExampleSet;
+import static com.rapidminer.test_stuff.Blaa.termFrequenceExampleToFeatures;
+import static com.rapidminer.topicmodel.mallet.ExampleSetHelper.getInstanceName;
+import static com.rapidminer.topicmodel.mallet.ExampleSetHelper.getInstanceSource;
+import static com.rapidminer.topicmodel.mallet.ExampleSetHelper.getInstanceTarget;
+
+import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 
+import cc.mallet.types.Alphabet;
+import cc.mallet.types.FeatureSequence;
+import cc.mallet.types.Instance;
+import cc.mallet.types.InstanceList;
+
 import com.rapidminer.example.Attribute;
+import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
 import com.rapidminer.example.table.ExampleTable;
@@ -60,6 +73,27 @@ public class helper
 	}
 	
 	
+	public static InstanceList getInstanceList(List<ExampleSet> _exampleSetList)
+	{
+		Alphabet globalAlphabet = getAlphabetFromExampleSet(_exampleSetList);
+		
+		InstanceList ret = new InstanceList(globalAlphabet, null);
+		
+		for(ExampleSet exampleSet : _exampleSetList)
+		{
+			for(Example example : exampleSet)
+			{
+				int[] features = termFrequenceExampleToFeatures(example, ret.getAlphabet());
+				FeatureSequence data = new FeatureSequence(ret.getAlphabet(), features);
+				
+				ret.add(new Instance(data, getInstanceTarget(example), getInstanceName(example), getInstanceSource(example)));
+			}
+		}
+		
+		return ret;
+	}
+	
+	
 	
 	public static List<Attribute> createAttributeList()
 	{
@@ -81,6 +115,31 @@ public class helper
 		ret.add(AttributeFactory.createAttribute("nicht",Ontology.NUMERICAL));		//[13]
 		
 		return ret;
+	}
+	
+	
+	public static void close(AutoCloseable _c)
+	{
+		if(_c != null)
+		{
+			try 
+			{
+				_c.close();
+			} 
+			catch (Exception e) {}
+		}
+	}
+	
+	public static void close(Closeable _c)
+	{
+		if(_c != null)
+		{
+			try 
+			{
+				_c.close();
+			} 
+			catch (Exception e) {}
+		}
 	}
 	
 	
