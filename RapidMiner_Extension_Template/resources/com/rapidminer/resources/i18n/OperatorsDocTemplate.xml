@@ -6,12 +6,6 @@
 		<name>Topic Model</name>
 	</group>
 	<operator>
-		<key>exampleset_to_topicmodel</key>
-		<name>Process ExampleSet to TopicModels</name>
-		<synopsis>TODO write synopsis</synopsis>
-		<help>TODO write help</help>
-	</operator>
-	<operator>
 		<key>documents_to_topicmodel</key>
 		<name>Process Documents to TopicModels</name>
 		<synopsis>TODO write synopsis</synopsis>
