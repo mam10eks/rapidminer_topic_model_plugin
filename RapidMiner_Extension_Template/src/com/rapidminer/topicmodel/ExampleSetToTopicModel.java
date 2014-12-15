@@ -12,7 +12,7 @@ import com.rapidminer.operator.ports.InputPortExtender;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeInt;
 
-import static com.rapidminer.operator.preprocessing.transformation.Numerical2DateOperator.doSomeExampleSetStuff;
+import static com.rapidminer.topicmodel.util.ExampleSetFormatHelper.doSomeExampleSetStuff;
 
 /**
  * An basic operator-template for topic models.

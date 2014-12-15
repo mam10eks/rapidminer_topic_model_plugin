@@ -1,10 +1,10 @@
 package com.rapidminer.topicmodel;
 
-import static com.rapidminer.test_stuff.Blaa.getAlphabetFromExampleSet;
-import static com.rapidminer.test_stuff.Blaa.termFrequenceExampleToFeatures;
 import static com.rapidminer.topicmodel.mallet.ExampleSetHelper.getInstanceName;
 import static com.rapidminer.topicmodel.mallet.ExampleSetHelper.getInstanceSource;
 import static com.rapidminer.topicmodel.mallet.ExampleSetHelper.getInstanceTarget;
+import static com.rapidminer.topicmodel.util.Blaa.getAlphabetFromExampleSet;
+import static com.rapidminer.topicmodel.util.Blaa.termFrequenceExampleToFeatures;
 
 import java.io.IOException;
 import java.util.ArrayList;

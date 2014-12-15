@@ -1,4 +1,4 @@
-package com.rapidminer.operator.preprocessing.transformation;
+package com.rapidminer.topicmodel.util;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -12,7 +12,7 @@ import com.rapidminer.example.table.DoubleArrayDataRow;
 import com.rapidminer.example.table.MemoryExampleTable;
 import com.rapidminer.tools.Ontology;
 
-import static com.rapidminer.operator.preprocessing.transformation.Numerical2DateOperator.doSomeExampleSetStuff;
+import static com.rapidminer.topicmodel.util.ExampleSetFormatHelper.doSomeExampleSetStuff;
 
 
 public class OperatorTest 

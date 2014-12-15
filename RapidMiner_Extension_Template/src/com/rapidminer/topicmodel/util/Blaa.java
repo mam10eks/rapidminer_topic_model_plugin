@@ -1,4 +1,4 @@
-package com.rapidminer.test_stuff;
+package com.rapidminer.topicmodel.util;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.table.ExampleTable;
 import com.rapidminer.topicmodel.helper;
 
-import static com.rapidminer.operator.preprocessing.transformation.Numerical2DateOperator.doSomeExampleSetStuff;
+import static com.rapidminer.topicmodel.util.ExampleSetFormatHelper.doSomeExampleSetStuff;
 
 public class Blaa 
 {
@@ -29,14 +29,6 @@ public class Blaa
 		doSomeExampleSetStuff(es, writer);
 		System.out.println(writer.toString());
 		
-		
-//		String[] alphabet = new String[es.getAttributes().size()];
-//		
-//		int i=0;
-//		for(Attribute attr : es.getAttributes())
-//		{
-//			alphabet[i++] = attr.getName();
-//		}
 
 		Alphabet alph = getAlphabetFromExampleSet(es);
 
@@ -139,16 +131,6 @@ public class Blaa
 	
 	public static Alphabet getAlphabetFromExampleSet(ExampleSet _exampleSet)
 	{
-//		String[] alphabetObjects = new String[_exampleSet.getAttributes().size()];
-//		
-//		int i=0;
-//		for(Attribute attr : _exampleSet.getAttributes())
-//		{
-//			alphabetObjects[i++] = attr.getName();
-//		}
-//
-//		return new Alphabet(alphabetObjects);
-		
 		List<ExampleSet> exampleSetList = new ArrayList<ExampleSet>();
 		exampleSetList.add(_exampleSet);
 		return getAlphabetFromExampleSet(exampleSetList);

@@ -1,10 +1,10 @@
 package com.rapidminer.topicmodel;
 
-import static com.rapidminer.test_stuff.Blaa.getAlphabetFromExampleSet;
-import static com.rapidminer.test_stuff.Blaa.termFrequenceExampleToFeatures;
 import static com.rapidminer.topicmodel.mallet.ExampleSetHelper.getInstanceName;
 import static com.rapidminer.topicmodel.mallet.ExampleSetHelper.getInstanceSource;
 import static com.rapidminer.topicmodel.mallet.ExampleSetHelper.getInstanceTarget;
+import static com.rapidminer.topicmodel.util.Blaa.getAlphabetFromExampleSet;
+import static com.rapidminer.topicmodel.util.Blaa.termFrequenceExampleToFeatures;
 
 import java.io.Closeable;
 import java.util.ArrayList;
@@ -23,8 +23,8 @@ import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.table.AttributeFactory;
 import com.rapidminer.example.table.ExampleTable;
 import com.rapidminer.example.table.MemoryExampleTable;
-import com.rapidminer.operator.preprocessing.transformation.Numerical2DateOperator;
 import com.rapidminer.tools.Ontology;
+import com.rapidminer.topicmodel.util.ExampleSetFormatHelper;
 import com.rapidminer.example.table.DataRow;
 import com.rapidminer.example.table.DataRowFactory;
 
@@ -42,7 +42,7 @@ public class helper
 		ExampleTable table = createExampleTable(attributes, createExampleTebleRows());
 		ExampleSet es = table.createExampleSet();
 		
-		Numerical2DateOperator.doSomeExampleSetStuff(es);
+		ExampleSetFormatHelper.doSomeExampleSetStuff(es);
 	}
 	
 	public static ExampleTable createExampleTable(List<Attribute> _attributes, List<List<Number>> _inputRows)

@@ -1,4 +1,4 @@
-package com.rapidminer.operator.preprocessing.transformation;
+package com.rapidminer.topicmodel.util;
 
 import static com.rapidminer.topicmodel.TabbedWriterHelper.write;
 
@@ -25,71 +25,13 @@ import com.rapidminer.operator.ports.metadata.SimplePrecondition;
  * @author maik
  *
  */
-public class Numerical2DateOperator extends Operator
+public class ExampleSetFormatHelper
 {
-	/**
-	 * Unique name values for each Port.
-	 */
-	private static final String
-		UNIQUE_INPUT_PORT_NAME = "example set input",
-		UNIQUE_OUTPUT_PORT_NAME = "example set output";
-		
-	
-	/**
-	 * Unique port.
-	 */
-	private InputPort 
-		exampleSetInput = getInputPorts().createPort(UNIQUE_INPUT_PORT_NAME);
-	
-	/**
-	 * unique port.
-	 */
-	private OutputPort
-		exampleSetOutput = getOutputPorts().createPort(UNIQUE_OUTPUT_PORT_NAME);
-	
-	
-	/**
-	 * 
-	 * @param description
-	 */
-	public Numerical2DateOperator(OperatorDescription description)
-	{
-		super(description);
-		this.exampleSetInput.addPrecondition(new SimplePrecondition(exampleSetInput, new MetaData(ExampleSet.class)));
-//		this.exampleSetInput.addPrecondition(new ExampleSetPrecondition(exampleSetInput,new String[]{"relative time"},Ontology.ATTRIBUTE_VALUE));
-	
-		
-		this.exampleSetOutput.deliverMD(new MetaData(ExampleSet.class));
-		
-	}
 
-	
-	/**
-	 * We do some test work.
-	 */
-	@Override
-	public void doWork() throws OperatorException
+	private ExampleSetFormatHelper()
 	{
-		ExampleSet exampleSet = exampleSetInput.getData(ExampleSet.class);
-	
-		doSomeExampleSetStuff(exampleSet);
-
-//		Attributes attributes = exampleSet.getAttributes();
-//		Attribute sourceAttribute = attributes.get("relative time");
-//		String newName = "date("+ sourceAttribute.getName() +")";
-//		Attribute targetAttribute = AttributeFactory.createAttribute(newName, Ontology.DATE_TIME);
-//		targetAttribute.setTableIndex(sourceAttribute.getTableIndex());
-//		attributes.addRegular(targetAttribute);
-//		attributes.remove(sourceAttribute);
-//		
-//		for(Example example : exampleSet)
-//		{
-//			double timeStampValue = example.getValue(targetAttribute);
-//			example.setValue(targetAttribute, timeStampValue * 1000);
-//		}
-//		
-		exampleSetOutput.deliver(exampleSet);
 	}
+	
 	
 	public static void doSomeExampleSetStuff(ExampleSet _exampleSet, Writer _writer)
 	{
