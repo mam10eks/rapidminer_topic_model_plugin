@@ -33,6 +33,11 @@ public class ExampleSetFormatHelper
 	}
 	
 	
+	/**
+	 * 
+	 * @param _exampleSet
+	 * @param _writer
+	 */
 	public static void doSomeExampleSetStuff(ExampleSet _exampleSet, Writer _writer)
 	{
 		int 
@@ -78,19 +83,22 @@ public class ExampleSetFormatHelper
 
 	
 
+	/**
+	 * 
+	 * @param _exampleSet
+	 */
 	public static void doSomeExampleSetStuff(ExampleSet _exampleSet)
-	{
-		
+	{	
 		try 
 		{
 			File file = new File("/home/maik/Schreibtisch/wordVector");
 			FileWriter fileWriter = new FileWriter(file);
 			doSomeExampleSetStuff(_exampleSet, fileWriter);
-		} catch (IOException e) {
+		} 
+		catch (IOException e) 
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
 	}
 }

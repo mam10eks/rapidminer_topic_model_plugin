@@ -3,8 +3,8 @@ package com.rapidminer.topicmodel;
 import static com.rapidminer.topicmodel.mallet.ExampleSetHelper.getInstanceName;
 import static com.rapidminer.topicmodel.mallet.ExampleSetHelper.getInstanceSource;
 import static com.rapidminer.topicmodel.mallet.ExampleSetHelper.getInstanceTarget;
-import static com.rapidminer.topicmodel.util.Blaa.getAlphabetFromExampleSet;
-import static com.rapidminer.topicmodel.util.Blaa.termFrequenceExampleToFeatures;
+import static com.rapidminer.topicmodel.util.MalletInputTransformationHelper.getAlphabetFromExampleSet;
+import static com.rapidminer.topicmodel.util.MalletInputTransformationHelper.termFrequenceExampleToFeatures;
 
 import java.io.Closeable;
 import java.util.ArrayList;
