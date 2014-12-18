@@ -8,6 +8,7 @@ import java.util.Locale;
 import cc.mallet.topics.ParallelTopicModel;
 import cc.mallet.types.Alphabet;
 import cc.mallet.types.FeatureSequence;
+import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelSequence;
 
@@ -46,13 +47,14 @@ public class TopicTrainerPostProcessor
 	public ExampleSet getAllTopics(int _topWords)
 	{
 		List<Attribute> attributes = new ArrayList<Attribute>();
+
 		List<List<Object>> rows = new ArrayList<List<Object>>();
 		Object[][] topWords = model.getTopWords(_topWords);
 		List<Object>[] row = new ArrayList[_topWords];
 		
 		for(int i = 0; i < _topWords; i++)
 		{
-			row[i] = new ArrayList<Object>();
+			row[i] = new ArrayList<Object>();			
 		}
 		
 		for(int i = 0; i < topWords.length; i++)
@@ -85,27 +87,37 @@ public class TopicTrainerPostProcessor
 	public ExampleSet getTopicDistributionForAllInstances()
 	{
 		List<Attribute> attributes = new ArrayList<Attribute>();
-		List<List<Number>> rows = new ArrayList<List<Number>>();
+		attributes.add(AttributeFactory.createAttribute("label", Ontology.NOMINAL));
+		attributes.add(AttributeFactory.createAttribute("metadata_file", Ontology.NOMINAL));
+		attributes.add(AttributeFactory.createAttribute("metadata_path", Ontology.NOMINAL));
+		
+		List<List<Object>> rows = new ArrayList<List<Object>>();
 		
 		for(int topic = 0; topic < model.getNumTopics(); topic++)
 		{
-			attributes.add(AttributeFactory.createAttribute("Topic " + topic, Ontology.NUMERICAL));
+			attributes.add(AttributeFactory.createAttribute("Topic " + topic, Ontology.NOMINAL));
 		}
 		
 		for(int doc = 0; doc < model.getData().size(); doc++)
 		{
-			List<Number> row = new ArrayList<Number>();
+			List<Object> row = new ArrayList<Object>();
 			
+			row.add(model.getData().get(doc).instance.getName());
+			row.add(model.getData().get(doc).instance.getTarget());
+			row.add(model.getData().get(doc).instance.getSource());
+						
 			double[] topicDistribution = model.getTopicProbabilities(doc);
 						
-			for(int topic = 0; topic < model.numTopics; topic++) row.add(topicDistribution[topic]);
-		
+			for(int topic = 0; topic < model.numTopics; topic++) 
+			{
+				row.add(topicDistribution[topic]+"");
+			}
 			rows.add(row);
 		}
 		
 		System.out.println(rows);
 		
-		ExampleTable table = helper.createExampleTable(attributes, rows);
+		ExampleTable table = helper.createObjectExampleTable(attributes, rows);
 		ExampleSet es = table.createExampleSet();	
 		
 		return es;
@@ -115,26 +127,52 @@ public class TopicTrainerPostProcessor
 	//TODO convert console output to an exampleset
 	public ExampleSet getTokenTopicAssignmentForAllInstances()
 	{
-		Formatter out = new Formatter(new StringBuilder(), Locale.GERMAN);
+
+		List<Attribute> attributes = new ArrayList<Attribute>();
+		attributes.add(AttributeFactory.createAttribute("label", Ontology.NOMINAL));
+		attributes.add(AttributeFactory.createAttribute("metadata_file", Ontology.NOMINAL));
+		attributes.add(AttributeFactory.createAttribute("metadata_path", Ontology.NOMINAL));
+
+		List<List<Object>> rows = new ArrayList<List<Object>>();
+		
 		Alphabet dataAlphabet = instances.getDataAlphabet();
 		
-		for(int i=0;i< model.getData().size();i++)
+		System.out.print("[");
+		
+		boolean didIAddAttributesYet = false;
+		
+		for(int doc = 0; doc < model.getData().size(); doc++)
 		{
-			out = new Formatter(new StringBuilder(), Locale.GERMAN);
-			out.format("\n################  DOCUMENT %d  ################\n", i);
-			out.format("\nTopic assignment:\n\n");
-			FeatureSequence tokens = (FeatureSequence) model.getData().get(i).instance.getData();
-			LabelSequence topics = model.getData().get(i).topicSequence;
+			List<Object> row = new ArrayList<Object>();
 			
-		    for(int position = 0; position < tokens.getLength(); position++) 
-		    {
-		    	out.format("%s-%d ", dataAlphabet.lookupObject(tokens.getIndexAtPosition(position)), topics.getIndexAtPosition(position));
-		    }
+			row.add(model.getData().get(doc).instance.getName());
+			row.add(model.getData().get(doc).instance.getTarget());
+			row.add(model.getData().get(doc).instance.getSource());
+			
+			FeatureSequence tokens = (FeatureSequence) model.getData().get(doc).instance.getData();
+			LabelSequence topics = model.getData().get(doc).topicSequence;
+			
+			System.out.print(",[");
+			
+			for(int index = 0; index < tokens.getLength(); index++)
+			{
+				System.out.print("(");
+				if(!didIAddAttributesYet) attributes.add(AttributeFactory.createAttribute("" + index, Ontology.NOMINAL));
+				System.out.print("" + index);
+				row.add(dataAlphabet.lookupObject(tokens.getIndexAtPosition(index)) + ", " + topics.getIndexAtPosition(index));
+				System.out.print(")");
+			}
+			didIAddAttributesYet = true;
+			
+			System.out.print("]");
+			rows.add(row);
 		}
+		System.out.print("]\n");
 		
-		System.out.println(out);
+		ExampleTable table = helper.createObjectExampleTable(attributes, rows);
+		ExampleSet es = table.createExampleSet();
 		
-		return null;
+		return es;
 	}
 	
 	
