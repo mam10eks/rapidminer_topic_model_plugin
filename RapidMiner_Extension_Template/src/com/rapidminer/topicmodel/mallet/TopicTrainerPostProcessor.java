@@ -123,11 +123,13 @@ public class TopicTrainerPostProcessor
 		return es;
 	}
 	
-	
-	//TODO convert console output to an exampleset
+	/**
+	 * this method should return an ExampleSet with the topic that a type is in for each document.<br>
+	 * 
+	 * @return 
+	 */
 	public ExampleSet getTokenTopicAssignmentForAllInstances()
 	{
-
 		List<Attribute> attributes = new ArrayList<Attribute>();
 		attributes.add(AttributeFactory.createAttribute("label", Ontology.NOMINAL));
 		attributes.add(AttributeFactory.createAttribute("metadata_file", Ontology.NOMINAL));
@@ -137,9 +139,7 @@ public class TopicTrainerPostProcessor
 		
 		Alphabet dataAlphabet = instances.getDataAlphabet();
 		
-		System.out.print("[");
-		
-		boolean didIAddAttributesYet = false;
+		int longestDoc = -1;
 		
 		for(int doc = 0; doc < model.getData().size(); doc++)
 		{
@@ -150,29 +150,26 @@ public class TopicTrainerPostProcessor
 			row.add(model.getData().get(doc).instance.getSource());
 			
 			FeatureSequence tokens = (FeatureSequence) model.getData().get(doc).instance.getData();
-			LabelSequence topics = model.getData().get(doc).topicSequence;
-			
-			System.out.print(",[");
+			LabelSequence topics = model.getData().get(doc).topicSequence;			
 			
 			for(int index = 0; index < tokens.getLength(); index++)
 			{
-				System.out.print("(");
-				if(!didIAddAttributesYet) attributes.add(AttributeFactory.createAttribute("" + index, Ontology.NOMINAL));
-				System.out.print("" + index);
-				row.add(dataAlphabet.lookupObject(tokens.getIndexAtPosition(index)) + ", " + topics.getIndexAtPosition(index));
-				System.out.print(")");
+				if(longestDoc < index)
+				{ 
+					attributes.add(AttributeFactory.createAttribute("" + index, Ontology.NOMINAL));
+					longestDoc ++;
+				}
+				row.add("" + topics.getIndexAtPosition(index));
 			}
-			didIAddAttributesYet = true;
 			
-			System.out.print("]");
 			rows.add(row);
 		}
-		System.out.print("]\n");
 		
 		ExampleTable table = helper.createObjectExampleTable(attributes, rows);
 		ExampleSet es = table.createExampleSet();
 		
 		return es;
+		
 	}
 	
 	
