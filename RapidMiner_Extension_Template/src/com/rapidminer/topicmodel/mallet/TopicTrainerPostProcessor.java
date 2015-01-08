@@ -95,8 +95,10 @@ public class TopicTrainerPostProcessor
 		
 		for(int topic = 0; topic < model.getNumTopics(); topic++)
 		{
-			attributes.add(AttributeFactory.createAttribute("Topic " + topic, Ontology.NOMINAL));
+			attributes.add(AttributeFactory.createAttribute("Topic " + topic, Ontology.NUMERICAL));
 		}
+		attributes.add(AttributeFactory.createAttribute("sum", Ontology.NUMERICAL));
+		
 		
 		for(int doc = 0; doc < model.getData().size(); doc++)
 		{
@@ -107,15 +109,20 @@ public class TopicTrainerPostProcessor
 			row.add(model.getData().get(doc).instance.getSource());
 						
 			double[] topicDistribution = model.getTopicProbabilities(doc);
-						
+		
+			float sum = 0.0f;
+			
 			for(int topic = 0; topic < model.numTopics; topic++) 
 			{
-				row.add(topicDistribution[topic]+"");
+				sum += topicDistribution[topic];
+				row.add(topicDistribution[topic]);
 			}
+			row.add(sum);
+			
 			rows.add(row);
 		}
 		
-		System.out.println(rows);
+//		System.out.println(rows);
 		
 		ExampleTable table = helper.createObjectExampleTable(attributes, rows);
 		ExampleSet es = table.createExampleSet();	
@@ -141,6 +148,19 @@ public class TopicTrainerPostProcessor
 		
 		int longestDoc = -1;
 		
+		for(int doc =0; doc < model.getData().size(); doc++)
+		{
+			FeatureSequence tokens = (FeatureSequence) model.getData().get(doc).instance.getData();
+			
+			longestDoc = (longestDoc >= tokens.getLength()) ? longestDoc : tokens.getLength();
+		}
+		
+		
+		for(int i=0; i<longestDoc; i++)
+		{
+			attributes.add(AttributeFactory.createAttribute(i+ ". Wort", Ontology.STRING));
+		}
+		
 		for(int doc = 0; doc < model.getData().size(); doc++)
 		{
 			List<Object> row = new ArrayList<Object>();
@@ -152,14 +172,27 @@ public class TopicTrainerPostProcessor
 			FeatureSequence tokens = (FeatureSequence) model.getData().get(doc).instance.getData();
 			LabelSequence topics = model.getData().get(doc).topicSequence;			
 			
-			for(int index = 0; index < tokens.getLength(); index++)
+			for(int index = 0; index < longestDoc; index++)
 			{
-				if(longestDoc < index)
-				{ 
-					attributes.add(AttributeFactory.createAttribute("" + index, Ontology.NOMINAL));
-					longestDoc ++;
+
+				
+//				if(longestDoc < index)
+//				{ 
+//					attributes.add(AttributeFactory.createAttribute("" + index, Ontology.NOMINAL));
+//					longestDoc ++;
+//				}
+				
+				if(tokens.getLength() > index)
+				{
+					Formatter out = new Formatter(new StringBuilder(), Locale.GERMAN);
+					out.format("%s-%d ", dataAlphabet.lookupObject(tokens.getIndexAtPosition(index)), topics.getIndexAtPosition(index));
+//					row.add("" + topics.getIndexAtPosition(index));
+					row.add(out.toString());
 				}
-				row.add("" + topics.getIndexAtPosition(index));
+				else
+				{
+					row.add("?");
+				}
 			}
 			
 			rows.add(row);
