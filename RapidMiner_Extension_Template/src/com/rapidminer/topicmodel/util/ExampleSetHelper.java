@@ -1,6 +1,7 @@
-package com.rapidminer.topicmodel.mallet;
+package com.rapidminer.topicmodel.util;
 
 import com.rapidminer.example.Example;
+
 
 public class ExampleSetHelper 
 {

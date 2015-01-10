@@ -1,8 +1,8 @@
 package com.rapidminer.topicmodel;
 
-import static com.rapidminer.topicmodel.mallet.ExampleSetHelper.getInstanceName;
-import static com.rapidminer.topicmodel.mallet.ExampleSetHelper.getInstanceSource;
-import static com.rapidminer.topicmodel.mallet.ExampleSetHelper.getInstanceTarget;
+import static com.rapidminer.topicmodel.util.ExampleSetHelper.getInstanceName;
+import static com.rapidminer.topicmodel.util.ExampleSetHelper.getInstanceSource;
+import static com.rapidminer.topicmodel.util.ExampleSetHelper.getInstanceTarget;
 import static com.rapidminer.topicmodel.util.MalletInputTransformationHelper.getAlphabetFromExampleSet;
 import static com.rapidminer.topicmodel.util.MalletInputTransformationHelper.termFrequenceExampleToFeatures;
 
