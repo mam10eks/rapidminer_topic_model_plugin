@@ -10,17 +10,13 @@ import java.io.Writer;
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.operator.Operator;
-import com.rapidminer.operator.OperatorDescription;
-import com.rapidminer.operator.OperatorException;
-import com.rapidminer.operator.ports.InputPort;
-import com.rapidminer.operator.ports.OutputPort;
-import com.rapidminer.operator.ports.metadata.MetaData;
-import com.rapidminer.operator.ports.metadata.SimplePrecondition;
 
 
 /**
- * My first operator.
+ * This util class prepare some basic methods to write an {@link com.rapidminer.example.ExampleSet ExampleSet} formatted to an arpitrary place.
+ * E.g. to a file or stdout.
+ * 
+ * 
  * 
  * @author maik
  *
@@ -35,16 +31,16 @@ public class ExampleSetFormatHelper
 	
 	/**
 	 * 
-	 * @param _exampleSet
-	 * @param _writer
+	 * @param _exampleSet 
+	 * @param _writer _exampleSet will be written to this.
 	 */
-	public static void doSomeExampleSetStuff(ExampleSet _exampleSet, Writer _writer)
+	public static void writeExampleSetFormatted(ExampleSet _exampleSet, Writer _writer)
 	{
 		int 
 			rowCount = _exampleSet.size() +1,
 			columnCount = _exampleSet.getAttributes().size() +1;
 
-		String[][] rows = new String[rowCount][/*columnCount*/];
+		String[][] rows = new String[rowCount][];
 
 		int i=1;
 	
@@ -84,20 +80,20 @@ public class ExampleSetFormatHelper
 	
 
 	/**
+	 * Writes _exampleSet to the File "/home/maik/Schreibtisch/wordVector"
 	 * 
-	 * @param _exampleSet
+	 * @param _exampleSet table to write to the file.
 	 */
-	public static void doSomeExampleSetStuff(ExampleSet _exampleSet)
+	public static void writeExampleSetFormattedToMyFile(ExampleSet _exampleSet)
 	{	
 		try 
 		{
 			File file = new File("/home/maik/Schreibtisch/wordVector");
 			FileWriter fileWriter = new FileWriter(file);
-			doSomeExampleSetStuff(_exampleSet, fileWriter);
+			writeExampleSetFormatted(_exampleSet, fileWriter);
 		} 
 		catch (IOException e) 
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

@@ -13,52 +13,16 @@ import com.rapidminer.topicmodel.helper;
 
 
 /**
+ * A util class to transform examples in something that mallet can deal with.
  * 
  * @author maik
  *
  */
 public class MalletInputTransformationHelper
-{
-	
-//	public static void main(String[] args)
-//	{
-//		ExampleSet es = getSmallTestExampleSet();
-//		
-//		StringWriter writer = new StringWriter();
-//		doSomeExampleSetStuff(es, writer);
-//		System.out.println(writer.toString());
-//		
-//
-//		Alphabet alph = getAlphabetFromExampleSet(es);
-//
-//		InstanceList featureVectorInstances = new InstanceList(alph, null);
-//		
-//		for(Example example : es)
-//		{
-//			double[] values = new double[es.getAttributes().size()];
-//			int row = 0;
-//			for(Attribute attr : es.getAttributes())
-//			{
-//				values[row++] = example.getNumericalValue(attr);
-//			}
-//			FeatureVector exampleVector = new FeatureVector(featureVectorInstances.getAlphabet(), values);
-//			
-//			System.out.println(exampleVector.toString());
-//			featureVectorInstances.add(new Instance(exampleVector, "target", "name", "source"));
-//		}
-//		
-//		
-//		InstanceList featureSequenceInstances = new InstanceList(alph, null);
-//		for(Example example : es)
-//		{
-//			int[] features = termFrequenceExampleToFeatures(example, featureSequenceInstances.getAlphabet());
-//			FeatureSequence data = new FeatureSequence(featureSequenceInstances.getAlphabet(), features);
-//			
-//			System.out.println(data.toString());
-//			featureSequenceInstances.add(new Instance(data, "target", "name", "source"));
-//		}
-//	}
-	
+{	
+	private MalletInputTransformationHelper()
+	{
+	}
 	
 	
 	/**
@@ -174,25 +138,7 @@ public class MalletInputTransformationHelper
 		
 		return ret;
 	}
-	
-	
-//	/**
-//	 * 
-//	 * ATTENTION:<br>
-//	 * Only numerical Attributes will be added to the Alphabet.
-//	 * 
-//	 * @param ExampleSet, where it is to determine the common Alphabet.
-//	 * @return Common Alphabet.<br>
-//	 * Each AlphabetObject is a numerical Attribute from the ExampleSet.
-//	 * 
-//	 */
-//	public static Alphabet getAlphabetFromExampleSet(ExampleSet _exampleSet)
-//	{
-//		List<ExampleSet> exampleSetList = new ArrayList<ExampleSet>();
-//		exampleSetList.add(_exampleSet);
-//		return getAlphabetFromExampleSet(exampleSetList);
-//	}
-	
+
 	/**
 	 * 
 	 * ATTENTION:<br>

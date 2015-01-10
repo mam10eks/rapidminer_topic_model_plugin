@@ -42,7 +42,7 @@ public class helper
 		ExampleTable table = createExampleTable(attributes, createExampleTebleRows());
 		ExampleSet es = table.createExampleSet();
 		
-		ExampleSetFormatHelper.doSomeExampleSetStuff(es);
+		ExampleSetFormatHelper.writeExampleSetFormattedToMyFile(es);
 	}
 	
 	public static ExampleTable createExampleTable(List<Attribute> _attributes, List<List<Number>> _inputRows)

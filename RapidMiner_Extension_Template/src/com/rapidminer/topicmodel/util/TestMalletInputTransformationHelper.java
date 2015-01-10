@@ -1,7 +1,5 @@
 package com.rapidminer.topicmodel.util;
 
-import static com.rapidminer.topicmodel.util.ExampleSetFormatHelper.doSomeExampleSetStuff;
-
 import java.io.StringWriter;
 
 import junit.framework.Assert;
@@ -18,24 +16,31 @@ import cc.mallet.types.InstanceList;
 import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
-import com.rapidminer.topicmodel.util.MalletInputTransformationHelper;
 
+import com.rapidminer.topicmodel.util.MalletInputTransformationHelper;
+import com.rapidminer.topicmodel.util.ExampleSetFormatHelper;
 
 /**
+ * This is a junit test class to determine the correct functionality of:<br>
+ * -{@link com.rapidminer.topicmodel.util.MalletInputTransformationHelper MalletInputTransformationHelper}<br>
+ * -{@link com.rapidminer.topicmodel.util.ExampleSetFormatHelper ExampleSetFormatHelper}<br>
  * 
  * @author maik
  *
  */
 public class TestMalletInputTransformationHelper 
 {
-
+	/** Alphabet of the documents from es. */
 	private static Alphabet 
 		alph = null;
 	
+	/** Some dummy documents. Only for test purpose. */
 	private static ExampleSet 
 		es = null;
 	
-	
+	/**
+	 * initialise es and alph.
+	 */
 	@BeforeClass
 	public static void setUp()
 	{
@@ -44,11 +49,14 @@ public class TestMalletInputTransformationHelper
 	}
 	
 	
+	/**
+	 * determine whether ExampleSetFormatHelper.writeExampleSetFormatted would write correct to stdout.
+	 */
 	@Test
 	public void testCreateExampleSetAndPrint()
 	{
 		StringWriter writer = new StringWriter();
-		doSomeExampleSetStuff(es, writer);
+		ExampleSetFormatHelper.writeExampleSetFormatted(es, writer);
 		
 		String ret = writer.toString();
 		
@@ -56,6 +64,10 @@ public class TestMalletInputTransformationHelper
 	}
 	
 	
+	/**
+	 * Determine whether the es will be transformed and added correctly to 
+	 * the feature vector instancelist.
+	 */
 	@Test
 	public void testExampleVector()
 	{
@@ -82,7 +94,10 @@ public class TestMalletInputTransformationHelper
 	}
 	
 	
-	
+	/**
+	 * transform each document from es to a featuresequence.
+	 * Add this featureSequence to a InstanceList.
+	 */
 	@Test
 	public void testFeatureSequence()
 	{
@@ -100,11 +115,15 @@ public class TestMalletInputTransformationHelper
 		}
 	}
 	
+	/**
+	 * An test, this time a bit more complex.
+	 *  
+	 */
 	@Test
 	public void testInteraction()
 	{
 		StringWriter writer = new StringWriter();
-		doSomeExampleSetStuff(es, writer);
+		ExampleSetFormatHelper.writeExampleSetFormatted(es, writer);
 		System.out.println(writer.toString());
 		
 		InstanceList featureVectorInstances = new InstanceList(alph, null);

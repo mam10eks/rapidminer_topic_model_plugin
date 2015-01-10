@@ -12,7 +12,7 @@ import com.rapidminer.operator.ports.InputPortExtender;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeInt;
 
-import static com.rapidminer.topicmodel.util.ExampleSetFormatHelper.doSomeExampleSetStuff;
+import com.rapidminer.topicmodel.util.ExampleSetFormatHelper;
 
 /**
  * An basic operator-template for topic models.
@@ -84,7 +84,7 @@ public class ExampleSetToTopicModel extends Operator
 			
 			
 			
-			doSomeExampleSetStuff(exampleSet);
+			ExampleSetFormatHelper.writeExampleSetFormattedToMyFile(exampleSet);
 
 			exampleSetOutput.deliver(exampleSet);
 			break;
