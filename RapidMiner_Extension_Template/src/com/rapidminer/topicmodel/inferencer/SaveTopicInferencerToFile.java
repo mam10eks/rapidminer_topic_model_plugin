@@ -14,15 +14,36 @@ import com.rapidminer.operator.ports.metadata.MetaData;
 import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeFile;
 
+/**
+ * 
+ * @author maik
+ * @see com.rapidminer.operator.Operator
+ */
 public class SaveTopicInferencerToFile extends Operator
 {
-	public final String
-		TOPIC_INFERENCER_INPUT_PORT = "inferencer inport",
+	/** input port name*/
+	public static final String
+		TOPIC_INFERENCER_INPUT_PORT = "inferencer inport";
+	
+	/** total path to the place where the {@link cc.mallet.topics.TopicInferencer TopicInferencer} will be stored.*/
+	public static final String
 		INFERENCER_FILE_TOTAL_PATH = "inferencer file";
 	
+	/** Single InputPort which expect a {@link com.rapidminer.topicmodel.inferencer.MalletTopicInferencerIOObject MalletTopicInferencerIOObject}. */
 	private final InputPort
 		topicInferencerInput = getInputPorts().createPort(TOPIC_INFERENCER_INPUT_PORT);
 	
+	
+	/** 
+	 * Create a instance of {@link com.rapidminer.topicmodel.inferencer.SaveTopicInferencerToFile SaveTopicInferencerToFile} 
+	 * (which is a {@link com.rapidminer.operator.Operator Operator})  with the following ports:<br>
+	 * one input ports which expect the {@link com.rapidminer.topicmodel.inferencer.MalletTopicInferencerIOObject Wrapped TopicIferencer}.<br>
+	 * no output ports<br>
+	 * 
+	 * @param description will be delegated to the constructor of the parent {@link com.rapidminer.operator.Operator Operator}
+	 *
+	 * @see com.rapidminer.operator.Operator
+	 */
 	public SaveTopicInferencerToFile(OperatorDescription description) 
 	{
 		super(description);
@@ -31,6 +52,13 @@ public class SaveTopicInferencerToFile extends Operator
 	}
 
 	
+	/**
+	 * {@inheritDoc}
+	 * <br><br>
+	 * This implementation serialize the given {@link cc.mallet.topics.TopicInferencer TopicInferencer} from the InputPort
+	 * to a file specified by {@link SaveTopicInferencerToFile#INFERENCER_FILE_TOTAL_PATH INFERENCER_FILE_TOTAL_PATH}.
+	 * 
+	 */
 	@Override
 	public void doWork() throws OperatorException
 	{
@@ -71,7 +99,15 @@ public class SaveTopicInferencerToFile extends Operator
 		}
 	}
 	
-	
+
+	/**
+	 * The Operator can accept the following parameters:<br><br>
+	 * 
+	 * {@link SaveTopicInferencerToFile#INFERENCER_FILE_TOTAL_PATH INFERENCER_FILE_TOTAL_PATH}<br>
+	 * 
+	 * <br><br>
+	 * {@inheritDoc}
+	 */
 	@Override
 	public List<ParameterType> getParameterTypes() 
 	{

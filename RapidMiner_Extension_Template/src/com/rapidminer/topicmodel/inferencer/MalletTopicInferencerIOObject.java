@@ -10,9 +10,12 @@ import com.rapidminer.operator.ResultObjectAdapter;
 
 
 /**
+ * Wrapping-Helper to transport a {@link cc.mallet.topics.TopicInferencer TopicInferencer} between RapidMiner interfaces.<br>
+ * E.g. from one Operator to another one.
  * 
  * @author maik
  *
+ * @see com.rapidminer.operator.ResultObjectAdapter
  */
 public class MalletTopicInferencerIOObject extends ResultObjectAdapter
 {
@@ -31,7 +34,7 @@ public class MalletTopicInferencerIOObject extends ResultObjectAdapter
 	
 	/**
 	 * 
-	 * @param _topicInferencer
+	 * @param _topicInferencer will be wrapped.
 	 */
 	public MalletTopicInferencerIOObject(TopicInferencer _topicInferencer)
 	{
@@ -41,14 +44,19 @@ public class MalletTopicInferencerIOObject extends ResultObjectAdapter
 	
 	/**
 	 * 
-	 * @return
+	 * @return the wrapped object.
 	 */
 	public TopicInferencer getTopicInferencer()
 	{
 		return this.inferencer;
 	}
 
-	
+	/**
+	 * This implementation returns the wrapped Object, with some meta informations like a header,
+	 * in serialized form.<br>
+	 * 
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toResultString()
 	{
@@ -74,6 +82,10 @@ public class MalletTopicInferencerIOObject extends ResultObjectAdapter
 	}
 	
 	
+	/**
+	 * @return The wrapped Object as serialized String.
+	 * @throws IOException Any exception thrown by ByteArrayOutputStream.
+	 */
 	public String getSerializedStringOfInferencer() throws IOException
 	{
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
