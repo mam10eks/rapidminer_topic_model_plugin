@@ -121,8 +121,7 @@ public class DocumentsTopicModel extends Operator
 		
 		getAndSetInput();
 		
-//		if(inferencer == null)
-//		{
+		
 		model = new ParallelTopicModel(numTopics, alphaSum, beta);
 		model.addInstances(instances);
 		model.setNumThreads(numThreads);
@@ -131,7 +130,6 @@ public class DocumentsTopicModel extends Operator
 		try
 		{
 			model.estimate();
-			System.out.println("estimated");
 		}
 		catch(IOException _ioException)
 		{
@@ -154,54 +152,6 @@ public class DocumentsTopicModel extends Operator
 		}
 		topicAllocationOutput.deliver(postProcessor.getTopicDistributionForAllInstances());
 		topicAllocationForEachWordOutput.deliver(postProcessor.getTokenTopicAssignmentForAllInstances());
-//		}
-//		else
-//		{
-//			List<Attribute> attributes = new ArrayList<Attribute>();
-//			attributes.add(AttributeFactory.createAttribute("label", Ontology.NOMINAL));
-//			attributes.add(AttributeFactory.createAttribute("metadata_file", Ontology.NOMINAL));
-//			attributes.add(AttributeFactory.createAttribute("metadata_path", Ontology.NOMINAL));
-//			
-//			boolean isAttributeListComplete = false;
-//			
-//			List<List<Object>> rows = new ArrayList<List<Object>>();
-//			for(Instance inst : instances)
-//			{
-//				
-//				double[] testProbabilities = inferencer.getSampledDistribution(inst, numIterations, 1, 5);
-//				
-//				List<Object> row = new ArrayList<Object>();
-//				
-//				row.add(inst.getName());
-//				System.out.println(inst.getName());
-//				row.add(inst.getTarget());
-//				System.out.println(inst.getTarget());
-//				row.add(inst.getSource());
-//				System.out.println(inst.getSource());
-//				
-//				for(int i=0;i<testProbabilities.length; i++)
-//				{
-//					row.add(testProbabilities[i]);
-//				}
-//				rows.add(row);
-//		        
-//		        if(!isAttributeListComplete)
-//		        {
-//		        	isAttributeListComplete = true;
-//		        	
-//		        	for(int i=0;i<testProbabilities.length; i++)
-//		        	{
-//		        		attributes.add(AttributeFactory.createAttribute("Topic "+ i, Ontology.NUMERICAL));
-//		        	}
-//		        }
-//			}
-//			
-//			ExampleTable table = helper.createObjectExampleTable(attributes, rows);
-//			ExampleSet es = table.createExampleSet();
-//			
-//			topicAllocationOutput.deliver(es);
-//			inferencerOutput.deliver(new MalletTopicInferencerIOObject( inferencer));
-//		}
 	}
 	
 	
@@ -219,19 +169,7 @@ public class DocumentsTopicModel extends Operator
 		 
 		 return ret;
 	 }
-	 
-	 
-//	 private InstanceList createSampleInstanceList()
-//	 {
-//			ArrayList<Pipe> pipeList = new ArrayList<Pipe>();
-//
-//		    pipeList.add( new CharSequenceLowercase() );
-//		    pipeList.add( new CharSequence2TokenSequence(Pattern.compile("\\p{L}[\\p{L}\\p{P}]+\\p{L}")) );
-//		    pipeList.add( new TokenSequence2FeatureSequence() );
-//			
-//			return new InstanceList (new SerialPipes(pipeList));
-//	 }
-	 
+
 	 
 	 private void getAndsetParameters() throws UndefinedParameterError
 	 {

@@ -8,7 +8,6 @@ import java.util.Locale;
 import cc.mallet.topics.ParallelTopicModel;
 import cc.mallet.types.Alphabet;
 import cc.mallet.types.FeatureSequence;
-import cc.mallet.types.Instance;
 import cc.mallet.types.InstanceList;
 import cc.mallet.types.LabelSequence;
 
@@ -21,15 +20,37 @@ import com.rapidminer.tools.Ontology;
 import com.rapidminer.topicmodel.helper;
 import com.rapidminer.topicmodel.inferencer.MalletTopicInferencerIOObject;
 
+
+/**
+ * A helper to get useful informations of a {@link cc.mallet.topics.ParallelTopicModel ParallelTopicModel}<br>
+ * AFTER the model has been estimated().<br>
+ * <br>
+ * I.e. The {@link cc.mallet.topics.ParallelTopicModel ParallelTopicModel} is already defined and has its documents assigned and
+ * model.estimate() is called.<br>
+ * In other words all the work is done and the only thing that this postprocessor does is to get and prepare
+ * nice informations about the training-process.
+ * 
+ * @author maik
+ *
+ */
 public class TopicTrainerPostProcessor
 {
+	/** The {@link cc.mallet.topics.ParallelTopicModel ParallelTopicModel} that is used for the post-processing.*/
 	private final ParallelTopicModel
 		model;
 	
+	/** {@link cc.mallet.types.InstanceList InstanceList}, where a instance is a single document.*/
 	private final InstanceList
 		instances;
 	
-	
+	/**
+	 * ATTENTION: only use after the _model is defined AND TRAINED!
+	 * 
+	 * 
+	 * @param _model The trained topic model.<br>
+	 * I.e. one must have called estimate() before one should get some post-processing informations.
+	 * @param _instances All documents which are contained and estimated from the _model.
+	 */
 	public TopicTrainerPostProcessor(ParallelTopicModel _model, InstanceList _instances)
 	{
 		this.model = _model;
@@ -39,10 +60,10 @@ public class TopicTrainerPostProcessor
 	
 	
 	/**
-	 * this method should return an ExampleSet as overview of all trained topics.<br>
+	 * This method should return an ExampleSet as overview of all trained topics.<br>
 	 * For each Topic there will be shown the _topWords most frequently words of the topic.
 	 * 
-	 * @return
+	 * @return All Topics with the _topWords most frequently words as {@link com.rapidminer.example.ExampleSet ExampleSet}.
 	 */
 	public ExampleSet getAllTopics(int _topWords)
 	{
@@ -79,10 +100,10 @@ public class TopicTrainerPostProcessor
 	}
 	
 	/**
-	 * this method should return an ExampleSet with the probability that a topic is part of a document.<br>
+	 * This method should return an ExampleSet with the probability that a topic is part of a document.<br>
 	 * For each Topic there will be shown the probability that Topic is in document.
 	 * 
-	 * @return 
+	 * @return Topic distribution for each document as {@link com.rapidminer.example.ExampleSet ExampleSet}.
 	 */
 	public ExampleSet getTopicDistributionForAllInstances()
 	{
@@ -122,8 +143,6 @@ public class TopicTrainerPostProcessor
 			rows.add(row);
 		}
 		
-//		System.out.println(rows);
-		
 		ExampleTable table = helper.createObjectExampleTable(attributes, rows);
 		ExampleSet es = table.createExampleSet();	
 		
@@ -131,9 +150,13 @@ public class TopicTrainerPostProcessor
 	}
 	
 	/**
-	 * this method should return an ExampleSet with the topic that a type is in for each document.<br>
+	 * This method should return an ExampleSet with the topic that a token is in for each document.<br>
+	 * The tokens are sorted alphanumerical.<br>
+	 * Each token from each document will occur.<br>
+	 * E.G.: for a document n a value coud be "word - assigned topic".
 	 * 
-	 * @return 
+	 * @return <word - topic> <word - topic> assignment for each word in each document(one document per row) as
+	 * {@link com.rapidminer.example.ExampleSet ExampleSet}.
 	 */
 	public ExampleSet getTokenTopicAssignmentForAllInstances()
 	{
@@ -174,20 +197,12 @@ public class TopicTrainerPostProcessor
 			
 			for(int index = 0; index < longestDoc; index++)
 			{
-
-				
-//				if(longestDoc < index)
-//				{ 
-//					attributes.add(AttributeFactory.createAttribute("" + index, Ontology.NOMINAL));
-//					longestDoc ++;
-//				}
-				
 				if(tokens.getLength() > index)
 				{
 					Formatter out = new Formatter(new StringBuilder(), Locale.GERMAN);
 					out.format("%s-%d ", dataAlphabet.lookupObject(tokens.getIndexAtPosition(index)), topics.getIndexAtPosition(index));
-//					row.add("" + topics.getIndexAtPosition(index));
 					row.add(out.toString());
+					out.close();
 				}
 				else
 				{
@@ -206,6 +221,10 @@ public class TopicTrainerPostProcessor
 	}
 	
 	
+	/**
+	 * 
+	 * @return The trained inferencer from the topic model.
+	 */
 	public IOObject getTrainedInferencer()
 	{
 		MalletTopicInferencerIOObject generatedInferencer = new MalletTopicInferencerIOObject(model.getInferencer());
