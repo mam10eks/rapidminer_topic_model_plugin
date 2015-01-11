@@ -1,5 +1,8 @@
 package com.rapidminer.topicmodel.util;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,26 +38,26 @@ public class OperatorTest
 	
 	
 	@Test
-	public void testSymmetricExample()
+	public void testSymmetricExample() throws IOException
 	{
 		testDoWork(18, 18);
 	}
 	
 	@Test
-	public void testAsymmetricOne()
+	public void testAsymmetricOne() throws IOException
 	{
 		testDoWork(1111, 15);
 	}
 	
 	
 	@Test
-	public void testAsymmetricTwo()
+	public void testAsymmetricTwo() throws IOException
 	{
 		testDoWork(6, 19);
 	}
 	
 	@Test
-	public void testAsymmetricTree()
+	public void testAsymmetricTree() throws IOException
 	{
 		testDoWork(99,20);
 	}
@@ -66,7 +69,7 @@ public class OperatorTest
 	 * @param _rows number of rows in the ExampleSet.
 	 * @param attributCount number of attributes of the ExampleSet.
 	 */
-	private void testDoWork(int _rows, int attributCount)
+	private void testDoWork(int _rows, int attributCount) throws IOException
 	{
 		// create attribute list
 		List <Attribute> attributes = new LinkedList<Attribute>();
@@ -98,6 +101,9 @@ public class OperatorTest
 		// create example set
 		ExampleSet exampleSet = table.createExampleSet(label);
 			
-		ExampleSetFormatHelper.writeExampleSetFormattedToMyFile(exampleSet);
+		File file = new File("/home/maik/Schreibtisch/wordVector");
+		FileWriter fileWriter = new FileWriter(file);
+		
+		ExampleSetFormatHelper.writeExampleSetFormatted(exampleSet, fileWriter);
 	}
 }

@@ -2,8 +2,6 @@ package com.rapidminer.topicmodel.util;
 
 import static com.rapidminer.topicmodel.TabbedWriterHelper.write;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 
@@ -79,22 +77,22 @@ public class ExampleSetFormatHelper
 
 	
 
-	/**
-	 * Writes _exampleSet to the File "/home/maik/Schreibtisch/wordVector"
-	 * 
-	 * @param _exampleSet table to write to the file.
-	 */
-	public static void writeExampleSetFormattedToMyFile(ExampleSet _exampleSet)
-	{	
-		try 
-		{
-			File file = new File("/home/maik/Schreibtisch/wordVector");
-			FileWriter fileWriter = new FileWriter(file);
-			writeExampleSetFormatted(_exampleSet, fileWriter);
-		} 
-		catch (IOException e) 
-		{
-			e.printStackTrace();
-		}
-	}
+//	/**
+//	 * Writes _exampleSet to the File "/home/maik/Schreibtisch/wordVector"
+//	 * 
+//	 * @param _exampleSet table to write to the file.
+//	 */
+//	public static void writeExampleSetFormattedToMyFile(ExampleSet _exampleSet)
+//	{	
+//		try 
+//		{
+//			File file = new File("/home/maik/Schreibtisch/wordVector");
+//			FileWriter fileWriter = new FileWriter(file);
+//			writeExampleSetFormatted(_exampleSet, fileWriter);
+//		} 
+//		catch (IOException e) 
+//		{
+//			e.printStackTrace();
+//		}
+//	}
 }

@@ -9,7 +9,7 @@ import com.rapidminer.example.Attribute;
 import com.rapidminer.example.Example;
 import com.rapidminer.example.ExampleSet;
 import com.rapidminer.example.table.ExampleTable;
-import com.rapidminer.topicmodel.helper;
+import com.rapidminer.topicmodel.Helper;
 
 
 /**
@@ -40,7 +40,6 @@ public class MalletInputTransformationHelper
 	{	
 		List<String> termList = new ArrayList<String>();
 		
-		//TODO capsule!!
 		for(Attribute attr : _example.getAttributes())
 		{
 			String alphabetObject = attr.getName();
@@ -177,11 +176,11 @@ public class MalletInputTransformationHelper
 	 */
 	public static ExampleSet getSmallTestExampleSet()
 	{
-		List<Attribute> attributes = helper.createAttributeList();
+		List<Attribute> attributes = Helper.createAttributeList();
 		
-		List<List<Number>> documents = helper.createExampleTebleRows();
+		List<List<Number>> documents = Helper.createExampleTableRows();
 		
-		ExampleTable exampleTable = helper.createExampleTable(attributes, documents);
+		ExampleTable exampleTable = Helper.createExampleTable(attributes, documents);
 		
 		return exampleTable.createExampleSet();
 	}

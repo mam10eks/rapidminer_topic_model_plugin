@@ -17,7 +17,7 @@ import com.rapidminer.example.table.AttributeFactory;
 import com.rapidminer.example.table.ExampleTable;
 import com.rapidminer.operator.IOObject;
 import com.rapidminer.tools.Ontology;
-import com.rapidminer.topicmodel.helper;
+import com.rapidminer.topicmodel.Helper;
 import com.rapidminer.topicmodel.inferencer.MalletTopicInferencerIOObject;
 
 
@@ -93,7 +93,7 @@ public class TopicTrainerPostProcessor
 			rows.add(row[i]);
 		}
 		
-		ExampleTable table = helper.createObjectExampleTable(attributes, rows);
+		ExampleTable table = Helper.createObjectExampleTable(attributes, rows);
 		ExampleSet es = table.createExampleSet();	
 		
 		return es;
@@ -143,7 +143,7 @@ public class TopicTrainerPostProcessor
 			rows.add(row);
 		}
 		
-		ExampleTable table = helper.createObjectExampleTable(attributes, rows);
+		ExampleTable table = Helper.createObjectExampleTable(attributes, rows);
 		ExampleSet es = table.createExampleSet();	
 		
 		return es;
@@ -213,7 +213,7 @@ public class TopicTrainerPostProcessor
 			rows.add(row);
 		}
 		
-		ExampleTable table = helper.createObjectExampleTable(attributes, rows);
+		ExampleTable table = Helper.createObjectExampleTable(attributes, rows);
 		ExampleSet es = table.createExampleSet();
 		
 		return es;

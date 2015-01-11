@@ -25,7 +25,7 @@ import com.rapidminer.parameter.ParameterType;
 import com.rapidminer.parameter.ParameterTypeFile;
 import com.rapidminer.parameter.ParameterTypeInt;
 import com.rapidminer.tools.Ontology;
-import com.rapidminer.topicmodel.helper;
+import com.rapidminer.topicmodel.Helper;
 
 
 /**
@@ -111,7 +111,7 @@ public class ProcessTopicInferencerFromFile extends Operator
 			List<ExampleSet> exampleSetList = exampleSetInputPorts.getData(ExampleSet.class, true);
 
 			
-			InstanceList instances = helper.getInstanceList(exampleSetList);
+			InstanceList instances = Helper.getInstanceList(exampleSetList);
 			
 			List<Attribute> attributes = new ArrayList<Attribute>();
 			attributes.add(AttributeFactory.createAttribute("label", Ontology.NOMINAL));
@@ -150,7 +150,7 @@ public class ProcessTopicInferencerFromFile extends Operator
 		        }
 			}
 			
-			ExampleTable table = helper.createObjectExampleTable(attributes, rows);
+			ExampleTable table = Helper.createObjectExampleTable(attributes, rows);
 			ExampleSet es = table.createExampleSet();
 			
 			exampleSetOutput.deliver(es);
@@ -217,15 +217,15 @@ public class ProcessTopicInferencerFromFile extends Operator
 		}
 		catch(ClassNotFoundException _classNotFoundException)
 		{
-			helper.close(ois);
-			helper.close(fis);
+			Helper.close(ois);
+			Helper.close(fis);
 			
 			throw _classNotFoundException;
 		}
 		catch(IOException _ioException)
 		{
-			helper.close(ois);
-			helper.close(fis);
+			Helper.close(ois);
+			Helper.close(fis);
 			
 			throw _ioException;			
 		}

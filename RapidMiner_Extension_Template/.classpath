@@ -5,7 +5,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src_generated"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/RapidMiner_Unuk"/>
-	<classpathentry kind="lib" path="lib/rapidminer-Text Processing-5.3.001.jar"/>
 	<classpathentry kind="lib" path="lib/bsh.jar"/>
 	<classpathentry kind="lib" path="lib/grmm-deps.jar"/>
 	<classpathentry kind="lib" path="lib/jdom-1.0.jar"/>

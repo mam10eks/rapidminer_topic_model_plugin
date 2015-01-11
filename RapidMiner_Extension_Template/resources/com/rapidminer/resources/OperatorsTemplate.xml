@@ -5,7 +5,7 @@
 		<group key="topic_models">
 			<operator>
 				<key>documents_to_topicmodel</key>
-				<class>com.rapidminer.topicmodel.DocumentsTopicModel</class>
+				<class>com.rapidminer.topicmodel.DocumentsToTopicModel</class>
 			</operator>
 			<operator>
 			    <key>process_inferencer</key>

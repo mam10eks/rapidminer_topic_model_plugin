@@ -10,11 +10,13 @@ import org.junit.Test;
 
 public class TabbedWriterHelper 
 {
+	/**
+	 * @param _text a matrix from Strings, a row is a document and the i.th cell of this row is a word at the i.th position of the document. 
+	 * @param _writer the class where _text will be written to.
+	 * @throws IOException If an I/O error occurs.
+	 */
 	public static void write(String[][] _text, Writer _writer) throws IOException
 	{
-//		File file = new File("/home/maik/Schreibtisch/wordVector");
-		
-//		FileWriter fileWriter = new FileWriter(file);
 		BufferedWriter writer = new BufferedWriter(_writer);
 		
 		int wordLength = getMaxStringLength(_text);
@@ -23,8 +25,6 @@ public class TabbedWriterHelper
 			String line = "";
 			for(String cell : row)
 			{
-//				for(int i=cell.length(); i<wordLength;i++)
-//				{
 				while(cell.length() <= wordLength)
 				{
 					cell += " ";
@@ -38,13 +38,13 @@ public class TabbedWriterHelper
 		
 		writer.close();
 		_writer.close();
-		
-		
-		
 	}
 
 	
-	
+	/**
+	 * junit-test
+	 * @throws IOException
+	 */
 	@Test
 	public void testWriter() throws IOException
 	{
@@ -54,7 +54,11 @@ public class TabbedWriterHelper
 		write(new String[][]{new String[]{"","hhhhh", "dsfdsf","dfsf"}, new String[]{"Row1", "sfa", "dssd", "fsafdsaf"}, new String[]{"Row 2", "fasf","fsa", "fsa"}}, fileWriter);
 	}
 	
-	
+	/**
+	 * 
+	 * @param _input matrix of strings
+	 * @return the length of the largest String in this matrix.
+	 */
 	public static int getMaxStringLength(String[][] _input)
 	{
 		int maxLength = 0;
