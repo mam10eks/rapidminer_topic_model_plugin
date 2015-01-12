@@ -8,20 +8,48 @@
 	<operator>
 		<key>documents_to_topicmodel</key>
 		<name>Process Documents to TopicModels</name>
-		<synopsis>TODO write synopsis</synopsis>
-		<help>TODO write help</help>
+		<synopsis>Ein Operator, der als Eingabe beliebig viele
+			Term-Occurence-Word-Vectoren nimmt.
+			Ein solcher Vektor repräsentiert ein Dokument.
+			Die Vektoren können dabei in beliebig viele ExampleSets aufgeteilt sein.
+		</synopsis>
+		<help>
+		    Bei fragen gibt die API dokumentation
+			cc.mallet.topics.ParallelTopicModel 
+			(http://mallet.cs.umass.edu/api/cc/mallet/topics/ParallelTopicModel.html)
+			aufschluss zum implementierten TopicModell und dessen Memern.
+		</help>
 	</operator>
 	<operator>
-	    <key>process_inferencer</key>
-	    <name>Process Inferencer</name>
-	    <synopsis>TODO write synopsis</synopsis>
-	    <help>TODO write help</help>
+		<key>process_inferencer</key>
+		<name>Process Inferencer</name>
+		<synopsis>
+		    Lädt einen serialisierten TopicInferencer aus dem angegebenen File.
+		 	Dabei lässt der OOperator als Eingabe beliebig viele
+			Term-Occurence-Word-Vectoren zu.
+			Ein solcher Vektor repräsentiert ein Dokument.
+			Die Vektoren können dabei in beliebig viele ExampleSets aufgeteilt sein. 
+		 </synopsis>
+		<help>
+			Bei fragen gibt die API dokumentation
+			cc.mallet.topics.TopicInferencer 
+			(http://mallet.cs.umass.edu/api/cc/mallet/topics/TopicInferencer.html)
+			aufschluss zum implementierten TopicModell und dessen Memern.
+		</help>
 	</operator>
 	<operator>
-	    <key>inferencer_to_file</key>
-	    <name>Save Inferencer to File</name>
-	    <synopsis>TODO write synopsis</synopsis>
-	    <help>TODO write help</help>
+		<key>inferencer_to_file</key>
+		<name>Save Inferencer to File</name>
+		<synopsis>
+		    Als einzige Eingabe akzeptiert dieser Operator einen gewrappten TopicInferencer,
+		    welcher serialisiert im angegebenen File gespeichert wird.
+		</synopsis>
+		<help>
+		    Bei fragen gibt die API dokumentation
+			cc.mallet.topics.TopicInferencer 
+			(http://mallet.cs.umass.edu/api/cc/mallet/topics/TopicInferencer.html)
+			aufschluss zum implementierten TopicModell und dessen Memern.
+		</help>
 	</operator>
 
 </operatorHelp>
