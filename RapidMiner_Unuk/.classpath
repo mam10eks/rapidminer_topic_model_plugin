@@ -77,5 +77,6 @@
 	<classpathentry kind="lib" path="lib/jdbc/mysql-connector-java-5.1.24-bin.jar"/>
 	<classpathentry kind="lib" path="lib/jdbc/postgresql-9.2-1002.jdbc4.jar"/>
 	<classpathentry kind="lib" path="lib/jdbc/hsqldb.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/RapidMiner_Extension_Template"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
